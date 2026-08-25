@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1A1A2E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Triploom">
+  <title>Triploom — Magic Kingdom</title>
+  <style>
+    /* ── VARIÁVEIS ── */
+    :root {
+      --coral: #F4845F;
+      --coral-dark: #D96A44;
+      --navy: #1A1A2E;
+      --card: #242440;
+      --line: #2E2E50;
+      --white: #FFFFFF;
+      --gray: #8A8AA3;
+      --gray-light: #C4C4D4;
+      --green: #5FBF8F;
+      --red: #E8674A;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--navy);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
+    }
+
+    /* ── APP SHELL ── */
+    #app {
+      min-height: 100vh;
+      max-width: 440px;
+      margin: 0 auto;
+      background: var(--navy);
+      position: relative;
+    }
+
+    /* ── ANIMAÇÕES ── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-6px); }
+      40%       { transform: translateX(6px); }
+      60%       { transform: translateX(-4px); }
+      80%       { transform: translateX(4px); }
+    }
+    .fade-in { animation: fadeIn 0.3s ease; }
+
+    /* ── LAYOUT ── */
+    .screen { min-height: 100vh; padding-bottom: 32px; }
+    .center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    /* ── TIPOGRAFIA ── */
+    .logo-big {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 42px;
+      color: var(--white);
+      margin-top: 16px;
+      line-height: 1;
+    }
+    .logo-big span { color: var(--coral); }
+    .logo-small {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 22px;
+      color: var(--white);
+      line-height: 1;
+    }
+    .logo-small span { color: var(--coral); }
+    .subtitle {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+    .subtitle-small {
+      font-size: 10px;
+      color: var(--gray);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .section-label {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .field-label {
+      display: block;
+      font-size: 12px;
+      color: var(--gray-light);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    /* ── INPUTS ── */
+    .field {
+      width: 100%;
+      background: var(--navy);
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+    .field:focus { border-color: var(--coral); }
+    .field::placeholder { color: var(--gray); }
+
+    /* ── BOTÕES ── */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: var(--coral);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-primary:active { opacity: 0.85; transform: scale(0.98); }
+
+    .btn-outline {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border-radius: 13px;
+      border: 1.5px solid var(--line);
+      background: transparent;
+      color: var(--gray-light);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 8px;
+      transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--coral); }
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0 0 16px;
+      display: block;
+      font-family: inherit;
+    }
+
+    /* ── CONTAGEM ── */
+    .count-btn {
+      padding: 14px 0;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: var(--card);
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .count-btn:hover { border-color: var(--coral); color: var(--coral); }
+
+    /* ── SEXO / IDADE ── */
+    .sex-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border-radius: 11px;
+      border: 1.5px solid var(--line);
+      background: var(--card);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .sex-btn.selected { border-color: var(--coral); background: rgba(244,132,95,0.15); color: var(--coral); }
+
+    .age-btn {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 11px;
+      border: 1.5px solid var(--line);
+      background: var(--card);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .age-btn.selected { border-color: var(--coral); background: rgba(244,132,95,0.15); color: var(--coral); }
+
+    /* ── JOGADORES ── */
+    .player-btn {
+      border-radius: 14px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    /* ── ÁREAS ── */
+    .area-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 8px;
+      width: 100%;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    /* ── RANKING ── */
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    /* ── PROGRESSO ── */
+    .progress-bar {
+      height: 3px;
+      background: var(--line);
+      border-radius: 2px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── FLOWER ── */
+    .flower-wrap { display: flex; justify-content: center; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 0; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="perguntas.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
