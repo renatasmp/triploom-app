@@ -70,14 +70,20 @@ function renderCadastroOrg() {
       <div class="flower-wrap">${flowerSVG(72)}</div>
       <div class="logo-big">Trip<span>loom</span></div>
       <div class="subtitle">A viagem começa aqui</div>
-      <div class="card" style="margin-top:32px;text-align:left">
+      <p style="font-size:14px;color:var(--gray-light);margin-top:20px;line-height:1.7;max-width:280px">
+        Quiz interativo para famílias brasileiras que vão ao Magic Kingdom 🏰
+      </p>
+      <div class="card" style="margin-top:28px;text-align:left;width:100%;max-width:360px">
         <div class="section-label" style="margin-bottom:16px">Quem está organizando o quiz?</div>
         <label class="field-label">Seu nome</label>
         <input id="org-name" class="field" type="text" placeholder="Ex: Ana Silva" autocomplete="name">
         <label class="field-label" style="margin-top:12px">Seu e-mail</label>
         <input id="org-email" class="field" type="email" placeholder="Ex: ana@email.com" autocomplete="email">
       </div>
-      <button class="btn-primary" style="margin-top:16px" onclick="submitOrg()">Continuar →</button>
+      <button class="btn-primary" style="margin-top:16px;max-width:360px" onclick="submitOrg()">Continuar →</button>
+      <p style="font-size:11px;color:var(--gray);margin-top:14px;max-width:280px;line-height:1.6">
+        🔒 Seus dados são usados apenas para personalizar o quiz e melhorar o Triploom.
+      </p>
     </div>
   `);
 }
@@ -98,15 +104,21 @@ function renderCadastroCount() {
     <div class="screen center">
       ${flowerSVG(48)}
       <div class="logo-big" style="margin-top:12px">Trip<span>loom</span></div>
-      <div class="card" style="margin-top:28px">
-        <div class="section-label" style="margin-bottom:4px">Olá, ${STATE.organizer.name}! 🌸</div>
-        <p style="color:var(--gray);font-size:13px;line-height:1.6;margin-bottom:20px">Quantas pessoas vão participar do quiz? (incluindo você)</p>
+      <div class="card" style="margin-top:28px;width:100%;max-width:360px">
+        <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px">Olá, ${STATE.organizer.name}! 🌸</div>
+        <p style="color:var(--gray);font-size:13px;line-height:1.6;margin-bottom:20px">
+          Você vai cadastrar as pessoas do seu grupo agora.<br>
+          Quantas pessoas vão participar? <span style="color:var(--coral)">(incluindo você)</span>
+        </p>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
           ${[2,3,4,5,6,7,8].map(n => `
             <button class="count-btn" onclick="selectCount(${n})">${n}</button>
           `).join("")}
         </div>
       </div>
+      <p style="font-size:12px;color:var(--gray);margin-top:16px;max-width:280px;line-height:1.6">
+        💡 Cada pessoa vai ter seu próprio perfil e pontuação no ranking.
+      </p>
     </div>
   `);
 }
@@ -400,7 +412,8 @@ function renderVF(q, qAns, color, hasNext) {
       if (v === q.ans) { bg = "#E8F7EF"; border = "#5FBF8F"; tc = "#166534"; }
       else opacity = 0.35;
     }
-    return `<button onclick="${fb ? "" : `answerVF(${v})`}"
+    const clickFn = fb ? "" : `answerVF(${v ? 1 : 0})`;
+    return `<button onclick="${clickFn}"
       style="flex:1;padding:15px 10px;border-radius:13px;border:1.5px solid ${border};background:${bg};color:${tc};font-size:13px;font-weight:700;cursor:${fb ? "default" : "pointer"};opacity:${opacity};font-family:inherit">
       ${v ? "✅ Verdadeiro" : "❌ Falso"}
     </button>`;
@@ -482,9 +495,9 @@ function answerMultipla(i) {
 function answerVF(v) {
   const q = currentQ();
   if (!q || STATE.answered[q.id]) return;
-  const val = v === "true" || v === true;
-  STATE.answered[q.id] = { selected: val };
-  if (val === q.ans) addPts(20);
+  const boolVal = (v === 1 || v === true || v === "true");
+  STATE.answered[q.id] = { selected: boolVal };
+  if (boolVal === q.ans) addPts(20);
   render();
 }
 
