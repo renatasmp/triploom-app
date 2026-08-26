@@ -9,10 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="Triploom">
   <title>Triploom — Magic Kingdom</title>
   <style>
-    /* ── VARIÁVEIS ── */
     :root {
       --coral: #F4845F;
-      --coral-dark: #D96A44;
       --navy: #1A1A2E;
       --card: #242440;
       --line: #2E2E50;
@@ -22,8 +20,6 @@
       --green: #5FBF8F;
       --red: #E8674A;
     }
-
-    /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
     body {
@@ -33,8 +29,6 @@
       -webkit-font-smoothing: antialiased;
       overscroll-behavior: none;
     }
-
-    /* ── APP SHELL ── */
     #app {
       min-height: 100vh;
       max-width: 440px;
@@ -42,8 +36,20 @@
       background: var(--navy);
       position: relative;
     }
-
-    /* ── ANIMAÇÕES ── */
+    #loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .loading-text {
+      color: var(--gray);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -56,8 +62,6 @@
       80%       { transform: translateX(4px); }
     }
     .fade-in { animation: fadeIn 0.3s ease; }
-
-    /* ── LAYOUT ── */
     .screen { min-height: 100vh; padding-bottom: 32px; }
     .center {
       display: flex;
@@ -68,8 +72,6 @@
       padding: 40px 24px;
       text-align: center;
     }
-
-    /* ── TIPOGRAFIA ── */
     .logo-big {
       font-family: Georgia, 'Times New Roman', serif;
       font-size: 42px;
@@ -115,16 +117,12 @@
       font-weight: 600;
       margin-bottom: 6px;
     }
-
-    /* ── CARD ── */
     .card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 14px 16px;
     }
-
-    /* ── INPUTS ── */
     .field {
       width: 100%;
       background: var(--navy);
@@ -140,8 +138,6 @@
     }
     .field:focus { border-color: var(--coral); }
     .field::placeholder { color: var(--gray); }
-
-    /* ── BOTÕES ── */
     .btn-primary {
       display: block;
       width: 100%;
@@ -157,7 +153,6 @@
       transition: opacity 0.2s, transform 0.1s;
     }
     .btn-primary:active { opacity: 0.85; transform: scale(0.98); }
-
     .btn-outline {
       display: block;
       width: 100%;
@@ -171,10 +166,7 @@
       cursor: pointer;
       font-family: inherit;
       margin-top: 8px;
-      transition: border-color 0.2s;
     }
-    .btn-outline:hover { border-color: var(--coral); }
-
     .btn-back {
       background: none;
       border: none;
@@ -185,8 +177,6 @@
       display: block;
       font-family: inherit;
     }
-
-    /* ── CONTAGEM ── */
     .count-btn {
       padding: 14px 0;
       border-radius: 12px;
@@ -200,8 +190,6 @@
       transition: all 0.15s;
     }
     .count-btn:hover { border-color: var(--coral); color: var(--coral); }
-
-    /* ── SEXO / IDADE ── */
     .sex-btn {
       flex: 1;
       padding: 12px 8px;
@@ -216,7 +204,6 @@
       transition: all 0.15s;
     }
     .sex-btn.selected { border-color: var(--coral); background: rgba(244,132,95,0.15); color: var(--coral); }
-
     .age-btn {
       width: 100%;
       padding: 11px 14px;
@@ -232,8 +219,6 @@
       transition: all 0.15s;
     }
     .age-btn.selected { border-color: var(--coral); background: rgba(244,132,95,0.15); color: var(--coral); }
-
-    /* ── JOGADORES ── */
     .player-btn {
       border-radius: 14px;
       padding: 14px 10px;
@@ -242,8 +227,6 @@
       transition: all 0.15s;
       font-family: inherit;
     }
-
-    /* ── ÁREAS ── */
     .area-btn {
       display: flex;
       align-items: center;
@@ -258,16 +241,12 @@
       transition: all 0.15s;
       font-family: inherit;
     }
-
-    /* ── RANKING ── */
     .rank-row {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 6px;
     }
-
-    /* ── PROGRESSO ── */
     .progress-bar {
       height: 3px;
       background: var(--line);
@@ -278,17 +257,49 @@
       border-radius: 2px;
       transition: width 0.4s ease;
     }
-
-    /* ── FLOWER ── */
     .flower-wrap { display: flex; justify-content: center; }
-
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 0; }
   </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div id="loading">
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(0 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(45 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(90 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(135 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(180 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(225 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(270 30 30)"/>
+        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(315 30 30)"/>
+      </svg>
+      <div class="loading-text">Carregando Triploom...</div>
+    </div>
+  </div>
+
+  <!-- Perguntas carregam primeiro -->
   <script src="perguntas.js"></script>
-  <script src="app.js"></script>
+
+  <!-- App carrega depois, só inicia quando DOM estiver pronto -->
+  <script>
+    // Garante que o app só inicia depois de tudo carregado
+    window.addEventListener('load', function() {
+      // Pequeno delay para garantir que perguntas.js foi processado
+      setTimeout(function() {
+        var script = document.createElement('script');
+        script.src = 'app.js';
+        script.onerror = function() {
+          document.getElementById('app').innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;padding:24px;text-align:center">' +
+            '<div style="font-size:32px">⚠️</div>' +
+            '<div style="color:#F4845F;font-size:16px;font-weight:700">Erro ao carregar o app</div>' +
+            '<div style="color:#8A8AA3;font-size:13px">Tente recarregar a página</div>' +
+            '</div>';
+        };
+        document.body.appendChild(script);
+      }, 100);
+    });
+  </script>
 </body>
 </html>
