@@ -5,301 +5,983 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#1A1A2E">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Triploom">
   <title>Triploom — Magic Kingdom</title>
   <style>
     :root {
-      --coral: #F4845F;
-      --navy: #1A1A2E;
-      --card: #242440;
-      --line: #2E2E50;
-      --white: #FFFFFF;
-      --gray: #8A8AA3;
-      --gray-light: #C4C4D4;
-      --green: #5FBF8F;
-      --red: #E8674A;
+      --coral: #F4845F; --navy: #1A1A2E; --card: #242440; --line: #2E2E50;
+      --white: #FFFFFF; --gray: #8A8AA3; --gray-light: #C4C4D4; --green: #5FBF8F; --red: #E8674A;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
-    body {
-      background: var(--navy);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-      color: var(--white);
-      -webkit-font-smoothing: antialiased;
-      overscroll-behavior: none;
-    }
-    #app {
-      min-height: 100vh;
-      max-width: 440px;
-      margin: 0 auto;
-      background: var(--navy);
-      position: relative;
-    }
-    #loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .loading-text {
-      color: var(--gray);
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%       { transform: translateX(-6px); }
-      40%       { transform: translateX(6px); }
-      60%       { transform: translateX(-4px); }
-      80%       { transform: translateX(4px); }
-    }
+    body { background: var(--navy); font-family: 'Inter', -apple-system, sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+    #app { min-height: 100vh; max-width: 440px; margin: 0 auto; background: var(--navy); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
     .fade-in { animation: fadeIn 0.3s ease; }
     .screen { min-height: 100vh; padding-bottom: 32px; }
-    .center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 40px 24px;
-      text-align: center;
-    }
-    .logo-big {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 42px;
-      color: var(--white);
-      margin-top: 16px;
-      line-height: 1;
-    }
+    .center { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 24px; text-align: center; }
+    .logo-big { font-family: Georgia, serif; font-size: 42px; color: var(--white); margin-top: 16px; line-height: 1; }
     .logo-big span { color: var(--coral); }
-    .logo-small {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 22px;
-      color: var(--white);
-      line-height: 1;
-    }
+    .logo-small { font-family: Georgia, serif; font-size: 22px; color: var(--white); line-height: 1; }
     .logo-small span { color: var(--coral); }
-    .subtitle {
-      font-size: 11px;
-      color: var(--gray);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-top: 6px;
-    }
-    .subtitle-small {
-      font-size: 10px;
-      color: var(--gray);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-top: 2px;
-    }
-    .section-label {
-      font-size: 11px;
-      color: var(--gray);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-    .field-label {
-      display: block;
-      font-size: 12px;
-      color: var(--gray-light);
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px 16px;
-    }
-    .field {
-      width: 100%;
-      background: var(--navy);
-      border: 1.5px solid var(--line);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--white);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-      resize: none;
-    }
+    .subtitle { font-size: 11px; color: var(--gray); letter-spacing: 3px; text-transform: uppercase; font-weight: 600; margin-top: 6px; }
+    .subtitle-small { font-size: 10px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-top: 2px; }
+    .section-label { font-size: 11px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+    .field-label { display: block; font-size: 12px; color: var(--gray-light); font-weight: 600; margin-bottom: 6px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+    .field { width: 100%; background: var(--navy); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; color: var(--white); font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; resize: none; }
     .field:focus { border-color: var(--coral); }
     .field::placeholder { color: var(--gray); }
-    .btn-primary {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: var(--coral);
-      color: var(--white);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: inherit;
-      transition: opacity 0.2s, transform 0.1s;
-    }
-    .btn-primary:active { opacity: 0.85; transform: scale(0.98); }
-    .btn-outline {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border-radius: 13px;
-      border: 1.5px solid var(--line);
-      background: transparent;
-      color: var(--gray-light);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      margin-top: 8px;
-    }
-    .btn-back {
-      background: none;
-      border: none;
-      color: var(--gray);
-      font-size: 13px;
-      cursor: pointer;
-      padding: 0 0 16px;
-      display: block;
-      font-family: inherit;
-    }
-    .count-btn {
-      padding: 14px 0;
-      border-radius: 12px;
-      border: 1.5px solid var(--line);
-      background: var(--card);
-      color: var(--white);
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
-    }
-    .count-btn:hover { border-color: var(--coral); color: var(--coral); }
-    .sex-btn {
-      flex: 1;
-      padding: 12px 8px;
-      border-radius: 11px;
-      border: 1.5px solid var(--line);
-      background: var(--card);
-      color: var(--white);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
-    }
+    .btn-primary { display: block; width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--coral); color: var(--white); font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .btn-primary:active { opacity: 0.85; }
+    .btn-outline { display: block; width: 100%; padding: 12px; border-radius: 13px; border: 1.5px solid var(--line); background: transparent; color: var(--gray-light); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; }
+    .btn-back { background: none; border: none; color: var(--gray); font-size: 13px; cursor: pointer; padding: 0 0 16px; display: block; font-family: inherit; }
+    .count-btn { padding: 14px 0; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); color: var(--white); font-size: 20px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .sex-btn { flex: 1; padding: 12px 8px; border-radius: 11px; border: 1.5px solid var(--line); background: var(--card); color: var(--white); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
     .sex-btn.selected { border-color: var(--coral); background: rgba(244,132,95,0.15); color: var(--coral); }
-    .age-btn {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 11px;
-      border: 1.5px solid var(--line);
-      background: var(--card);
-      color: var(--white);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: inherit;
-      text-align: left;
-      transition: all 0.15s;
-    }
+    .age-btn { width: 100%; padding: 11px 14px; border-radius: 11px; border: 1.5px solid var(--line); background: var(--card); color: var(--white); font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; text-align: left; }
     .age-btn.selected { border-color: var(--coral); background: rgba(244,132,95,0.15); color: var(--coral); }
-    .player-btn {
-      border-radius: 14px;
-      padding: 14px 10px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s;
-      font-family: inherit;
-    }
-    .area-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1.5px solid transparent;
-      cursor: pointer;
-      text-align: left;
-      margin-bottom: 8px;
-      width: 100%;
-      transition: all 0.15s;
-      font-family: inherit;
-    }
-    .rank-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .progress-bar {
-      height: 3px;
-      background: var(--line);
-      border-radius: 2px;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.4s ease;
-    }
+    .player-btn { border-radius: 14px; padding: 14px 10px; cursor: pointer; text-align: center; font-family: inherit; }
+    .area-btn { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid transparent; cursor: pointer; text-align: left; margin-bottom: 8px; width: 100%; font-family: inherit; }
+    .rank-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .progress-bar { height: 3px; background: var(--line); border-radius: 2px; }
+    .progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
     .flower-wrap { display: flex; justify-content: center; }
     ::-webkit-scrollbar { width: 0; }
-  </style>
+</style>
 </head>
 <body>
-  <div id="app">
-    <div id="loading">
-      <svg width="60" height="60" viewBox="0 0 60 60">
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(0 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(45 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(90 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(135 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(180 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(225 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(270 30 30)"/>
-        <ellipse cx="30" cy="10.5" rx="6.6" ry="12.6" fill="#F4845F" transform="rotate(315 30 30)"/>
-      </svg>
-      <div class="loading-text">Carregando Triploom...</div>
-    </div>
-  </div>
-
-  <!-- Perguntas carregam primeiro -->
-  <script src="perguntas.js"></script>
-
-  <!-- App carrega depois, só inicia quando DOM estiver pronto -->
+  <div id="app"></div>
   <script>
-    // Garante que o app só inicia depois de tudo carregado
-    window.addEventListener('load', function() {
-      // Pequeno delay para garantir que perguntas.js foi processado
-      setTimeout(function() {
-        var script = document.createElement('script');
-        script.src = 'app.js';
-        script.onerror = function() {
-          document.getElementById('app').innerHTML =
-            '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;padding:24px;text-align:center">' +
-            '<div style="font-size:32px">⚠️</div>' +
-            '<div style="color:#F4845F;font-size:16px;font-weight:700">Erro ao carregar o app</div>' +
-            '<div style="color:#8A8AA3;font-size:13px">Tente recarregar a página</div>' +
-            '</div>';
-        };
-        document.body.appendChild(script);
-      }, 100);
-    });
+const PERGUNTAS = {
+  main: [
+    {id:1,type:"multipla",q:"Ao entrar no Magic Kingdom encontramos a Town Square no início da Main Street. Essa praça tem uma estátua homenageando quem?",opts:["Walt Disney e Mickey Mouse","Roy O. Disney e Minnie Mouse","Walt Disney e sua família","Mickey e Minnie Mouse"],ans:1,tip:"A estátua se chama 'Sharing the Magic'. Roy era irmão de Walt e foi quem concluiu a construção do Magic Kingdom após a morte de Walt em 1966.",ind:"🎬 Indicado: Era Uma Vez um Estúdio — Disney+"},
+    {id:2,type:"multipla",q:"A Town Square e a Main Street foram inspiradas em qual cidade real?",opts:["Kansas City","Marceline","Chicago","Los Angeles"],ans:1,tip:"Walt Disney passou parte da infância em Marceline, Missouri. A cidade inspirou toda a ambientação da entrada do parque.",ind:"🎵 Indicado: When You Wish Upon a Star — Pinóquio (1940)"},
+    {id:3,type:"complete",q:"O único local fixo do Mickey Mouse para encontros e fotos no Magic Kingdom é o ___",words:["The Town Square Theater","City Hall","Main Street Confectionery","Main Street Cinema"],ans:0,tip:"Nas festas de Halloween e Natal o casal Mickey e Minnie aparece junto nesse mesmo local.",ind:"🎬 Indicado: Vapor Willie, Mickey Mouse Curtir — Disney+"},
+    {id:4,type:"multipla",q:"Qual restaurante da Town Square é inspirado em um filme clássico da Disney?",opts:["Crystal Palace","Casey's Corner","Tony's Town Square Restaurant","The Plaza Restaurant"],ans:2,tip:"Tony é o cozinheiro italiano dono do restaurante do filme A Dama e o Vagabundo. O famoso espaguete com almôndegas é o prato mais pedido! É um restaurante table-service — reserve com antecedência.",ind:"🎬 Indicado: A Dama e o Vagabundo (1955) · 🎵 Bella Notte"},
+    {id:5,type:"multipla",q:"Você sabia que na Town Square do Magic Kingdom existe uma barbearia de verdade chamada Harmony Barber Shop? Quais são os serviços oferecidos?",opts:["Apenas corte infantil e barba","Apenas primeiro corte com certificado","Corte infantil, adulto, primeiro corte e barba","Apenas serviços para crianças"],ans:2,tip:"A Harmony Barber Shop atende crianças e adultos. Primeiro corte de cabelo: acompanha chapéu comemorativo com orelhas do Mickey, mecha de cabelo e certificado oficial de conquista. Funciona com agendamento prévio e gorjeta em dinheiro.",ind:null},
+    {id:6,type:"vf",q:"O grupo musical The Dapper Dans se apresenta na Main Street cantando à capela e sapateando.",ans:true,tip:"O quarteto musical passa por toda a Main Street com um estilo dos anos 20 — uma das experiências mais charmosas e gratuitas do parque.",ind:null},
+    {id:7,type:"multipla",q:"Qual é a sobremesa mais desejada para comer enquanto assiste ao show Happily Ever After, encontrada na Main Street Confectionery (quick-service)?",opts:["Pipoca personalizada","Algodão doce especial","Sorvete na Pia do Mickey","Maçã decorada da Minnie"],ans:0,tip:"No Brasil personalizamos sorvetes — aqui é a pipoca! Escolha a base (caramelo, manteiga ou kettle), depois a calda e por fim os toppings.",ind:null},
+    {id:8,type:"ordenar",q:"Na loja Crystal Arts da Main Street você pode participar da experiência Crystal Wish Keepers. Coloque os passos na ordem correta:",items:["Despeje os cristais no recipiente e faça um pedido especial","Escolha um recipiente de vidro (sapatinho, varinha, rosa da Bela e muitas outras opções)","Um Cast Member selará permanentemente o recipiente com os cristais e o seu sonho","Escolha sua seleção de cores de cristais — cada cor representa um sentimento"],correctOrder:[1,3,0,2],tip:"Uma das experiências mais significativas do parque — cada recipiente carrega um sonho único. É uma experiência paga à parte.",ind:null},
+    {id:9,type:"multipla",q:"Na Crystal Arts da Main Street existe uma experiência artística onde artesãos criam peças de cristal únicas ao vivo através do método glass blowing. Qual o nome dessa experiência?",opts:["Hand-Blown Glass Pumpkin","Crystal Glass Magic","Castle Glass Blowing","Glass Slipper Blowing"],ans:0,tip:"Os artesãos criam as peças ao vivo — você assiste tudo sendo feito na hora. Cada peça é única e personalizável! Experiência paga à parte.",ind:null},
+    {id:10,type:"multipla",q:"O Mickey Kitchen Sink é uma sobremesa especial do Magic Kingdom. Onde é vendida e o que a torna única?",opts:["No Emporium em uma caixa temática","Na Plaza Ice Cream Parlor (quick-service) em uma miniatura de pia que você leva para casa","No Crystal Palace em um pote do Mickey","Na Main Street Confectionery em uma lata"],ans:1,tip:"A 'pia do Mickey' é uma das sobremesas mais fotografadas da Main Street! A Plaza Ice Cream Parlor é um quick-service.",ind:null},
+    {id:11,type:"multipla",q:"Onde fica o pianista que toca músicas Disney em versão clássica no Magic Kingdom?",opts:["The Plaza Restaurant","Main Street Cinema","Casey's Corner","Main Street Confectionery"],ans:2,tip:"Dica de especialista: peça seu hot-dog no Casey's Corner (quick-service) e a sobremesa Pia do Mickey na Plaza Ice Cream Parlor uma hora antes do show de fogos — você garante um dos melhores lugares para assistir!",ind:null},
+    {id:12,type:"multipla",q:"O waffle de churros no formato do Mickey é uma sobremesa exclusiva e considerada rara. Onde você pode encontrá-la?",opts:["Nos restaurantes do Magic Kingdom","Apenas nos cruzeiros Disney","Crystal Palace (table-service) no MK, Spyglass Grill no Caribbean Beach Resort e nos cruzeiros Disney","Em todos os parques Disney de Orlando"],ans:2,tip:"Apenas 3 lugares em todo o mundo Disney! Dica de especialista: ao reservar o Crystal Palace para o último horário do café da manhã, você aproveita os itens do almoço pois durante esse horário tem-se a troca do bufê.",ind:null},
+    {id:13,type:"multipla",q:"A arquitetura do The Crystal Palace (table-service) se inspirou em qual marco histórico real?",opts:["Na grande estufa real do Jardim Botânico de Versalhes","No Palácio de Cristal de Londres (Crystal Palace, 1851)","Na estação de trem vitoriana de Chicago","No pavilhão de inverno dos czares russos em São Petersburgo"],ans:1,tip:"O visual vitoriano do restaurante é uma homenagem direta ao Crystal Palace de Londres. No restaurante você realiza sua refeição divertida com o Ursinho Pooh e toda a sua turma!",ind:null},
+    {id:14,type:"multipla",q:"Por que nenhuma estrutura do Magic Kingdom ultrapassa 61 metros (200 pés) de altura?",opts:["Por causa do limite de peso do solo pantanoso da Flórida","Para a sombra das torres não cobrir as piscinas dos resorts vizinhos","Devido a uma lei da aviação americana que exige luzes vermelhas piscantes acima dessa altura","Para garantir que ventos de furacões não derrubem as torres"],ans:2,tip:"A Disney não queria colocar luzes vermelhas piscando no topo do castelo de conto de fadas! O Castelo tem 57,6m e a Expedition Everest 60,6m — ambos logo abaixo do limite.",ind:null},
+    {id:15,type:"multipla",q:"O Magic Kingdom não tem fios elétricos aparentes e o lixo some misteriosamente. Qual estrutura escondida embaixo do parque permite isso?",opts:["Uma rede de metrô subterrâneo para funcionários VIP","Os Utilidors — sistema de túneis térreos onde o parque real foi construído por cima no segundo andar","Um enorme bunker à prova de furacões de titânio","Um lago artificial subterrâneo que gera energia limpa"],ans:1,tip:"O chão que você caminha no Magic Kingdom é na verdade o teto de um enorme complexo de túneis. O lixo é sugado por tubos pneumáticos e as mercadorias chegam sem estragar a magia!",ind:"🎬 Indicado: The Imagineering Story — Disney+"},
+    {id:16,type:"multipla",q:"Qual é o segredo de Walt Disney sobre a distância entre cada lixeira no Magic Kingdom?",opts:["Ficam a 100 metros uma da outra","Ficam a no máximo 30 passos de distância — Walt cronometrou quanto tempo uma pessoa andava com lixo antes de jogá-lo no chão","Mudam de lugar com sensores","São pintadas com cor invisível"],ans:1,tip:"Walt observou que a média que alguém aceita caminhar segurando um papel antes de jogá-lo no chão é de 30 passos. Por isso o Magic Kingdom é tão limpo!",ind:null},
+    {id:17,type:"vf",q:"A Disney possui uma tecnologia patenteada chamada Smellitizers que libera fragrâncias específicas em momentos precisos através de caixas de ventilação ocultas nos parques e atrações.",ans:true,tip:"Os Smellitizers são dispositivos patenteados que liberam aromas artificiais de forma controlada para criar uma experiência mais imersiva e mágica.",ind:null},
+    {id:18,type:"multipla",q:"Qual o cheiro específico da Main Street liberado através da tecnologia Smellitizer?",opts:["Cotton candy — algodão doce","Cookies recém-assados","Pipoca doce","Maçã caramelizada"],ans:1,tip:"A Main Street possui um cheirinho doce de cookies recém-assados. O olfato é o sentido mais conectado às memórias afetivas — esse aroma desperta conforto e felicidade ao entrar no parque!",ind:null},
+  ],
+  tomorrow: [
+    {id:20,type:"multipla",q:"Qual é o conceito temático da Tomorrowland no Magic Kingdom?",opts:["O mundo dos contos de fadas clássicos","Uma visão de futuro segundo Walt Disney","A América do século 18","O mundo da aventura e exploração"],ans:1,tip:"Walt Disney queria mostrar como seria o futuro — tecnologia, espaço e inovação. Uma visão otimista do amanhã que encanta até hoje.",ind:"🎬 Indicado: Tomorrowland (2015) — Disney+"},
+    {id:21,type:"multipla",q:"Qual atração da Tomorrowland foi inaugurada no mesmo dia da abertura do Magic Kingdom em 1971?",opts:["Space Mountain","Tomorrowland Speedway","Astro Orbiter","Buzz Lightyear's Space Ranger Spin"],ans:1,tip:"Embora pareça antiga, a Space Mountain só abriu em 1975! A pista de corrida Speedway estava lá desde o dia da inauguração do Magic Kingdom.",ind:null},
+    {id:22,type:"multipla",q:"Qual atração da Tomorrowland é ideal para fazer no horário do pôr do sol?",opts:["Space Mountain","TRON","Tomorrowland Transit Authority PeopleMover","Astro Orbiter"],ans:2,tip:"O PeopleMover é um passeio calmo em trilho elevado com vistas panorâmicas deslumbrantes da Tomorrowland. No pôr do sol a vista é ainda mais linda — perfeito para uma pausa sem ficar parado.",ind:null},
+    {id:23,type:"multipla",q:"No tranquilo Tomorrowland Transit Authority PeopleMover, qual maquete histórica criada pelo próprio Walt Disney pode ser vista durante o trajeto?",opts:["A maquete original do Castelo da Cinderela","O protótipo arquitetônico original da cidade do EPCOT","A maquete da primeira Disneyland da Califórnia","O protótipo do que seria o Animal Kingdom"],ans:1,tip:"Walt Disney planejou o EPCOT originalmente para ser uma cidade real e futurista. A maquete original pode ser vista de dentro do PeopleMover!",ind:null},
+    {id:24,type:"multipla",q:"Qual é a temática principal e a história por trás da atração TRON Lightcycle Run?",opts:["Uma corrida de carros clássicos numa cidade cibernética","Uma viagem espacial para salvar o sistema solar","Uma corrida de Lightcycles do Time Azul contra o Time Laranja no mundo digital conhecido como A Grade (The Grid)","Uma jornada aquática pelos arquivos perdidos do computador central ENCOM"],ans:2,tip:"A premissa da atração é você ser digitalizado para o mundo digital e competir em uma corrida emocionante pelo Time Azul contra a Equipe Laranja — confirmado pelo site oficial D23!",ind:"🎬 Indicado: TRON: O Legado (2010) — Disney+ · 🎵 Trilha do Daft Punk: Derezzed, The Son of Flynn, Adagio for TRON"},
+    {id:25,type:"multipla",q:"O que torna o veículo da atração TRON Lightcycle Run único em comparação com as montanhas-russas tradicionais da Disney?",opts:["Os visitantes viajam de pé durante todo o circuito","Os carrinhos possuem assentos giratórios","Os veículos flutuam sobre um trilho magnético","Os visitantes sentam em veículos que imitam motos futuristas, inclinando-se para a frente como em uma motocicleta"],ans:3,tip:"A posição de pilotagem imitando uma moto de corrida (Lightcycle), onde você é preso pelas costas, é o que torna o veículo tão especial e imersivo.",ind:null},
+    {id:26,type:"vf",q:"Se um visitante não se sentir confortável na posição de moto da TRON Lightcycle Run ele pode solicitar ao Cast Member um dos carrinhos normais adaptados no final de alguns trens.",ans:true,tip:"A Disney disponibiliza um ou dois carrinhos normais adaptados no final de alguns trens para acessibilidade ou conforto. Informação muito importante para famílias!",ind:null},
+    {id:27,type:"vf",q:"Na TRON Lightcycle Run, você precisa guardar sua mochila em um locker gratuito antes de entrar na atração.",ans:true,tip:"É a única atração do Magic Kingdom com essa exigência! Lockers de tamanho médio (30x30x45cm). Itens pequenos como celular e carteira ficam no compartimento embutido abaixo do painel do veículo.",ind:null},
+    {id:28,type:"multipla",q:"Por que a TRON Lightcycle Run é mais recomendada à noite do que durante o dia?",opts:["A fila é menor à noite","A transição entre ambiente interno e externo é perfeita à noite — mantendo a ilusão do videogame","A atração só funciona com iluminação noturna","Os efeitos sonoros são mais intensos à noite"],ans:1,tip:"Durante o dia, sair do escuro total para o sol forte da Flórida quebra a ilusão. À noite a transição é contínua e perfeita — uma das experiências mais imersivas de todo o Magic Kingdom!",ind:null},
+    {id:29,type:"ordenar",q:"Coloque todas as montanhas-russas do Magic Kingdom em ordem crescente de velocidade:",items:["Space Mountain","Big Thunder Mountain","TRON","The Barnstormer","Seven Dwarfs Mine Train"],correctOrder:[3,0,4,1,2],tip:"Barnstormer (40km/h) → Space Mountain (45km/h) → Seven Dwarfs Mine Train (55km/h) → Big Thunder Mountain (58km/h) → TRON (95-98km/h). O TRON é quase o dobro da velocidade da segunda mais rápida!",ind:null},
+    {id:30,type:"multipla",q:"Qual atração da Tomorrowland simula uma viagem pelo espaço sideral no escuro completo com curvas fechadas e quedas surpresa?",opts:["TRON","Astro Orbiter","Space Mountain","PeopleMover"],ans:2,tip:"A Space Mountain não tem looping e a velocidade máxima é de apenas 45km/h — mas o escuro completo e as curvas inesperadas criam uma sensação muito mais intensa do que os números sugerem!",ind:null},
+    {id:31,type:"multipla",q:"O que há de especial sobre a disposição dos assentos nos carrinhos da Space Mountain no Magic Kingdom?",opts:["Os visitantes vão sentados de lado","Os assentos são em fila indiana — uma pessoa atrás da outra em fila única","Os carrinhos flutuam com ímãs","Duas pessoas vão no colo uma da outra"],ans:1,tip:"Diferente da versão da Disneyland na Califórnia onde as pessoas vão em duplas lado a lado, em Orlando você vai sozinho em um banco, um atrás do outro.",ind:null},
+    {id:32,type:"vf",q:"No Tomorrowland Speedway os visitantes pilotam carrinhos de corrida com volante e acelerador de verdade.",ans:true,tip:"Os carrinhos são movidos a gasolina e atingem no máximo 12km/h! Dica: se um adulto estiver sozinho com duas crianças sem altura mínima, avise o cast member no início da fila — você receberá uma identificação roxa e terá prioridade para a segunda volta sem pegar fila!",ind:null},
+    {id:33,type:"multipla",q:"Qual é o objetivo da atração Buzz Lightyear's Space Ranger Spin?",opts:["Salvar a galáxia derrotando o Imperador Zerg com uma arma a laser","Encontrar todos os brinquedos perdidos do Andy","Ajudar o Buzz a voltar para casa","Destruir a nave do Imperador Zurg"],ans:0,tip:"Os veículos giram 360 graus e você mesmo controla a rotação. É uma competição saudável com seu parceiro de nave — quem marca mais pontos acertando os robôs do Zerg vence!",ind:"🎬 Indicado: Saga Toy Story completa — Disney+"},
+    {id:34,type:"multipla",q:"Para se tornar um Galactic Hero — pontuação máxima do Buzz Lightyear's Space Ranger Spin — quantos pontos você precisa marcar?",opts:["100.000 pontos","500.000 pontos","999.999 pontos","9.999.999 pontos"],ans:2,tip:"Se você atingir essa pontuação, o painel trava no número máximo. Tire uma foto do painel e mostre aos funcionários na saída para ganhar um adesivo exclusivo de Galactic Hero!",ind:null},
+    {id:35,type:"vf",q:"O Monster Inc Laugh Floor é um show interativo com participação do público conduzido pelo Mike Wazowski.",ans:true,tip:"O show é transmitido em telão e o Mike Wazowski interage com o público ao vivo — inclusive pode escolher você para participar! Uma atração divertida e sem filas grandes.",ind:"🎬 Indicado: Monstros S.A. (2001) e Monstros University (2013) — Disney+"},
+    {id:36,type:"multipla",q:"Qual é o nome do icônico DJ alienígena animatrônico que comanda o som do restaurante Cosmic Ray's Starlight Café (quick-service)?",opts:["Sonny Eclipse","Stitch","Zurg","Rex"],ans:0,tip:"Ele é um áudio-animatrônico que toca um teclado espacial e faz piadas enquanto os visitantes almoçam. Uma das figuras mais amadas da área.",ind:null},
+    {id:37,type:"multipla",q:"Qual é a sobremesa destaque do quiosque Astrofizz (quick-service) na Tomorrowland?",opts:["Sorvete de chocolate com caramelo","Churro coberto com açúcar de cereja, calda de Coca-Cola Cherry e confeitos que estalam na boca","Milkshake de baunilha com calda de menta","Pipoca caramelada com cobertura de chocolate"],ans:1,tip:"O Astrofizz é patrocinado pela Coca-Cola e tem visual futurista. O churro de Cherry Coca com confeitos que estalam na boca é um dos doces mais inusitados do Magic Kingdom!",ind:null},
+    {id:38,type:"multipla",q:"O Walt Disney's Carousel of Progress detém um recorde histórico mundial. Qual é ele?",opts:["É a atração com a fila mais longa da história da Disney","É o show com o maior palco móvel do mundo","É a atração que ficou mais tempo em manutenção","É o show de palco com mais apresentações na história do teatro americano"],ans:3,tip:"A atração foi criada pelo próprio Walt Disney para a Feira Mundial de Nova York de 1964. ATENÇÃO: atração fechada para reformas — previsão de reabertura em 2027.",ind:"🎵 Indicado: música 'There's a Great Big Beautiful Tomorrow' — irmãos Sherman"},
+  ],
+  fantasy: [
+    {id:40,type:"multipla",q:"Qual é a temática da Fantasyland no Magic Kingdom?",opts:["O mundo da ficção científica","Os contos de fadas clássicos da Disney","A América colonial","O mundo da aventura e exploração"],ans:1,tip:"A Fantasyland é a área mais querida pelas crianças — onde os contos de fadas clássicos ganham vida. É nessa área que se encontra o Castelo da Cinderela!",ind:"🎬 Indicado: Cinderela (1950) e Cinderela Live Action (2015) — Disney+"},
+    {id:41,type:"multipla",q:"Por que o Castelo da Cinderela parece muito mais alto do que seus 57 metros reais quando olhamos da Main Street?",opts:["Por causa da Perspectiva Forçada — janelas e tijolos vão diminuindo de tamanho à medida que o castelo fica mais alto","Porque foi construído em cima de uma colina artificial de 20 metros","Porque o topo é feito de espelhos que refletem as nuvens","Porque as árvores ao redor são podadas para parecerem miniaturas"],ans:0,tip:"Ao diminuir a escala dos tijolos, janelas e torres no topo, o cérebro humano interpreta que o topo está muito mais longe e alto. A engenharia visual favorita da Disney!",ind:null},
+    {id:42,type:"multipla",q:"Os mosaicos de vidro dentro do corredor do Castelo da Cinderela usam qual material especial para dar brilho às roupas das irmãs malvadas?",opts:["Ouro real de 14 quilates incorporado nos azulejos","Diamantes falsos colados sobre o vidro","Tinta neon que brilha sob luz negra","Cristais para compor os mosaicos"],ans:0,tip:"Os mosaicos usam pedaços de ouro real e prata junto com mais de 300 mil pedaços de vidro italiano para criar os efeitos de brilho históricos.",ind:null},
+    {id:43,type:"vf",q:"O Peter Pan's Flight está aberto desde a inauguração do Magic Kingdom em 1971.",ans:true,tip:"Uma das atrações mais antigas e queridas do parque — aberta desde 1971 e ainda com filas enormes! Um passeio pelos cenários clássicos do Peter Pan que encanta gerações.",ind:"🎬 Indicado: As Aventuras de Peter Pan (1953) e Peter Pan and Wendy (2023) — Disney+"},
+    {id:44,type:"multipla",q:"Na fila do Peter Pan's Flight, no berçário da família Darling, quais personagens formam as silhuetas que se movem sozinhas nos brinquedos?",opts:["Wendy, João e Miguel","Capitão Gancho, Sr. Smee e o Crocodilo","Tinker Bell, Peter Pan e os Garotos Perdidos","Nana, a cachorra babá"],ans:0,tip:"As silhuetas dos três irmãos Darling podem ser vistas brincando alegremente nos blocos antes do início da aventura na Terra do Nunca.",ind:null},
+    {id:45,type:"multipla",q:"Qual é a tradição entre os fãs Disney na atração It's a Small World?",opts:["Tirar foto com todos os personagens da atração","Jogar uma moedinha de 1 cent e fazer um pedido durante o passeio","Cantar a música da atração do início ao fim","Tocar na água do barco para dar sorte"],ans:1,tip:"Uma tradição encantadora que a maioria dos visitantes não conhece! Guarde uma moedinha de 1 cent antes de entrar na fila.",ind:"🎵 Indicado: música It's a Small World — vai ficar na cabeça por dias!"},
+    {id:46,type:"multipla",q:"O estilo visual do It's a Small World — bonecas e cores em tons pastel — foi criado por qual lendária artista da Disney?",opts:["Alice Davis","Harriet Burns","Mary Blair","Marc Davis"],ans:2,tip:"Mary Blair foi brilhante artista conceitual da Disney e Imagineer. Seu estilo modernista e uso de cores vibrantes definiram o design do It's a Small World.",ind:null},
+    {id:47,type:"multipla",q:"Quantos cavalos esculpidos à mão existem no Prince Charming Regal Carrousel — o famoso carrossel do parque?",opts:["60 cavalos","72 cavalos","90 cavalos","108 cavalos"],ans:2,tip:"Todos os detalhes em dourado são feitos em folha de ouro 23 quilates, prata e bronze. Para Walt Disney, todo parque deveria ter um carrossel — era o brinquedo onde toda a família consegue se divertir junto.",ind:null},
+    {id:48,type:"multipla",q:"O Prince Charming Regal Carrousel tem um cavalo especial considerado pelos fãs como 'cavalo da Cinderela'. Qual detalhe o identifica?",opts:["Ele é o único pintado inteiramente de ouro","Ele é o único com chifres como um unicórnio","Ele tem um laço dourado na cauda e armadura esculpida","Ele tem o nome Cinderela escrito na sela"],ans:2,tip:"O cavalo da Cinderela fica na fileira externa do carrossel com um laço dourado na cauda e flores na crina.",ind:null},
+    {id:49,type:"vf",q:"Em frente ao Prince Charming Regal Carrousel qualquer visitante pode tentar retirar a espada Excalibur da bigorna.",ans:true,tip:"É a espada do Rei Arthur do filme A Espada Era a Lei! O mecanismo para levantar a espada é controlado eletronicamente por um funcionário da Disney para criar um momento mágico surpresa!",ind:"🎬 Indicado: A Espada Era a Lei (1963) — Disney+"},
+    {id:50,type:"multipla",q:"Dentro da Fantasyland existe um espaço dedicado ao universo da Rapunzel (Enrolados — Tangled). Quantos camaleões amigos do Pascal estão escondidos na praça?",opts:["5 camaleões","8 camaleões","10 camaleões","12 camaleões"],ans:2,tip:"Eles estão camuflados na decoração do parque. Não deixe de verificar nas pedras do riacho, floreiras, troncos de árvores, colunas e postes!",ind:"🎬 Indicado: Enrolados — Disney+"},
+    {id:51,type:"multipla",q:"Se você olhar atentamente para as vigas de madeira na praça de Enrolados, qual item icônico que Rapunzel usa para se defender de Flynn Rider você consegue encontrar pendurado?",opts:["Pote de barro","Frigideira de ferro","Seus 21 metros de cabelos mágicos","Pascal"],ans:1,tip:"Rapunzel usa a frigideira de ferro 7 vezes para se defender no filme! Você encontra essas panelas penduradas nas vigas de madeira como easter eggs para os fãs.",ind:null},
+    {id:52,type:"multipla",q:"Ao caminhar pelo espaço temático de Enrolados, os cartazes de procurado com o rosto de Flynn Rider têm uma piada visual clássica do filme. O que os guardas do reino nunca conseguem acertar no retrato falado?",opts:["Orelha","Olhos","Boca","Nariz"],ans:3,tip:"Os guardas do reino nunca conseguem desenhar o nariz correto de Flynn Rider nas ilustrações, mantendo a mesma piada hilária do filme.",ind:null},
+    {id:53,type:"multipla",q:"Quando o sol se põe e a praça de Enrolados se ilumina, os fotógrafos do Disney PhotoPass oferecem uma foto exclusiva muito disputada. Que foto mágica é essa?",opts:["Uma foto com o cavalo Maximus aparecendo ao seu lado","Uma Magic Shot em que o visitante segura um lampião flutuante real iluminado, igual ao do Festival das Lanternas do filme","Uma imagem noturna com os cabelos dourados da Rapunzel brilhando ao redor do visitante","Um registro em movimento com as flores mágicas de sol desabrochando no chão"],ans:1,tip:"Você consegue tirar uma foto única segurando um lampião flutuante iluminado igual ao do Festival das Lanternas retratado no filme Enrolados. Uma recordação mágica!",ind:null},
+    {id:54,type:"multipla",q:"Qual é o valor estimado da construção do banheiro temático da Rapunzel na área Tangled da Fantasyland?",opts:["1 milhão de dólares","3 milhões de dólares","8 milhões de dólares","15 milhões de dólares"],ans:2,tip:"Um banheiro de 8 milhões de dólares — só na Disney isso é possível! É considerado um dos mais bonitos do mundo.",ind:null},
+    {id:55,type:"multipla",q:"Qual a utilidade secreta dos troncos de árvore e dos bancos de madeira perto da torre da Rapunzel no espaço de Enrolados?",opts:["Ventiladores de vento e vapor de água","Smellitizers — ventiladores de aromas","Pontos de recarga de celular gratuitos com porta USB e tomadas elétricas embutidas","Caixas de som"],ans:2,tip:"São gratuitos e um verdadeiro salva-vidas para muitos visitantes do parque!",ind:null},
+    {id:56,type:"vf",q:"O Mickey's PhilharMagic é um filme em 3D que mistura diversos clássicos da Disney.",ans:true,tip:"Na verdade é uma experiência em 4D! O Mickey's PhilharMagic mistura projeção 3D com efeitos sensoriais como vento, aromas e água. Ótima opção para uma pausa — sem filas grandes e com ar condicionado!",ind:null},
+    {id:57,type:"multipla",q:"Ao entrar nos carrinhos da atração The Many Adventures of Winnie the Pooh, que efeito físico real os visitantes sentem na cena em que o vento sopra forte no Bosque dos Cem Acres?",opts:["O carrinho começa a balançar e saltitar para simular o Tigrão pulando","O carrinho simula um movimento de flutuação, deslizando suavemente de um lado para o outro como se estivesse flutuando no vento","Pequenos jatos de água borrifam o rosto dos visitantes","O carrinho gira em 360 graus rapidamente"],ans:1,tip:"O carrinho desliza de um lado para o outro de forma fluida para passar a sensação de que o vento está carregando o pote de mel.",ind:"🎬 Indicado: Ursinho Pooh (2011) e Christopher Robin (2018) — Disney+"},
+    {id:58,type:"multipla",q:"A fila de espera do Ursinho Pooh tem atividade nas 'Honey Walls' (Paredes de Mel). O que as crianças fazem nessas telas?",opts:["As crianças usam as mãos para limpar o mel virtual da tela e revelar os personagens escondidos por trás","Os visitantes jogam um videogame de ritmo coletando abelhas virtuais","A tela funciona como um espelho mágico que transforma o reflexo do visitante no Leitão ou no Bisonho","É preciso desenhar um balão vermelho na tela para ajudar o Pooh a flutuar"],ans:0,tip:"As crianças usam as mãos para 'limpar' o mel virtual acumulado na tela, revelando personagens do Bosque dos Cem Acres escondidos por trás.",ind:null},
+    {id:59,type:"multipla",q:"Quando a atração Mr. Toad's Wild Ride fechou em 1998, onde os Imagineers esconderam uma homenagem ao Mr. Toad dentro do Winnie the Pooh?",opts:["No livro gigante que se abre no início do passeio","Na sala dos Efalantes e Woozles","Na cena do Blustery Day dentro da casa do Coruja","Na cena em que Pooh fica preso na toca do Coelho"],ans:2,tip:"Preste atenção às paredes quando seu veículo for levado pelo vento para dentro da casa do Coruja. O retrato de Mr. Toad está lá como uma despedida carinhosa!",ind:"🎬 Indicado: As Aventuras de Ichabod e do Sr. Sapo (1949) — Disney+"},
+    {id:60,type:"multipla",q:"Qual é a principal novidade da montanha-russa Seven Dwarfs Mine Train, localizada na Fantasyland?",opts:["Um looping duplo de alta velocidade no escuro total","O sistema de carrinhos que balançam de um lado para o outro imitando um vagão de mineração","A queda livre vertical de 40 metros de altura no início do percurso","A opção de pilotar o trem interativamente usando controles de movimento"],ans:1,tip:"O sistema de carrinhos tem um balanço igual aos vagões de mineradoras, pois essa atração acontece na mina de pedras preciosas onde os sete anões trabalham.",ind:"🎬 Indicado: Branca de Neve e os Sete Anões (1937) e Branca de Neve (2025) — Disney+"},
+    {id:61,type:"multipla",q:"A fila do Seven Dwarfs Mine Train tem um jogo interativo com barris de água. Quando todos os barris são ativados corretamente, o que aparece no teto da caverna?",opts:["Um arco-íris de luzes brilhantes","A música tema dos Sete Anões começa a tocar","Uma projeção da Branca de Neve dançando com animais surge no teto","O trem dos anões passa correndo"],ans:2,tip:"Quando o jogo dos barris é concluído com sucesso, uma adorável projeção da Branca de Neve aparece no teto da caverna. Uma surpresa que poucos visitantes conseguem ver!",ind:null},
+    {id:62,type:"multipla",q:"O restaurante Be Our Guest fica dentro de qual castelo?",opts:["Castelo da Cinderela","Castelo da Bela Adormecida","Castelo da Fera","Castelo do Rei Arthur"],ans:2,tip:"Uma refeição digna de princesa com menu de culinária francesa dividido em 3 alas. A Fera aparece apenas no jantar — planeje se quiser encontrá-la! O Be Our Guest é table-service.",ind:"🎬 Indicado: A Bela e a Fera (1991), live action (2017) — Disney+"},
+    {id:63,type:"multipla",q:"Quantas alas existem no restaurante Be Our Guest do Magic Kingdom?",opts:["2 alas — sala principal e galeria","3 alas — sala principal, galeria e ala oeste com a rosa encantada","4 alas — cada uma com um personagem diferente","2 alas — salão de jantar e salão de festas"],ans:1,tip:"A ala oeste é especial — lá fica a famosa rosa encantada do filme! Uma das ambientações mais lindas de todo o Magic Kingdom.",ind:null},
+    {id:64,type:"vf",q:"O Cinderella's Royal Table é um restaurante localizado dentro do Castelo da Cinderela onde princesas aparecem para fotos.",ans:true,tip:"Uma das experiências mais especiais do Magic Kingdom — jantar dentro do castelo da Cinderela! É um table-service — reservas abrem com até 60 dias de antecedência para hóspedes Disney.",ind:null},
+    {id:65,type:"vf",q:"No restaurante Pinocchio Village Haus existem mesas com janela para a atração It's a Small World.",ans:true,tip:"Uma das experiências mais únicas do parque — você realiza sua refeição enquanto os barquinhos do It's a Small World passam pela janela. O Pinocchio Village Haus é um quick-service.",ind:null},
+    {id:66,type:"multipla",q:"Qual é a experiência especial escondida dentro do Pinocchio Village Haus?",opts:["Uma sala secreta com personagens do Pinóquio","O livro dos desejos da Fada Azul — onde você escreve seu sonho e um cast member usa a varinha mágica","Um mini show do Pinóquio que acontece a cada hora","Uma janela secreta para os bastidores do parque"],ans:1,tip:"Ao entrar no salão principal olhe para o lado esquerdo — você verá uma luz azul brilhando ao lado do livro. Leve sua caneta e escreva seu maior sonho. O cast member dirá: Bibbidi Bobbidi Boo!",ind:null},
+    {id:67,type:"multipla",q:"Qual é a sobremesa mais famosa do Gaston's Tavern (quick-service) na Fantasyland?",opts:["Torta de maçã da Branca de Neve","Crème Brûlée Croissant — massa leve recheada com creme de baunilha e camada crocante açucarada","Cupcake decorado com a rosa da Bela e a Fera","Wafle de churros no formato do Mickey"],ans:1,tip:"Considerado um dos melhores doces de todo o complexo Disney! Uma versão original do clássico francês em formato de bolinho. Não deixe de provar!",ind:null},
+    {id:68,type:"multipla",q:"Qual filme clássico da Disney, lançado em 1941, serve como tema principal e inspiração para a área do Storybook Circus no Magic Kingdom?",opts:["Pinóquio","Peter Pan","Dumbo","A Dama e o Vagabundo"],ans:2,tip:"A área do Storybook Circus é inteiramente inspirada no clássico filme de 1941, Dumbo.",ind:"🎬 Indicado: Dumbo (1941) e a versão live action Dumbo (2019) — Disney+"},
+    {id:69,type:"multipla",q:"Qual é o principal objetivo dos visitantes na atividade Smellephants on Parade?",opts:["Encontrar 8 estátuas de elefantes coloridos e adivinhar seus aromas de lanches clássicos do parque","Assistir a um show musical estrelado pelo elefante Dumbo","Colecionar broches exclusivos trocando dicas com os funcionários","Participar de um jogo de tabuleiro gigante nas telas da fila do Dumbo"],ans:0,tip:"Ao completar a caçada mostre para um cast member e ganhe um adesivo especial! Use seu nariz como guia — cada elefante tem um cheiro diferente.",ind:null},
+    {id:70,type:"multipla",q:"A montanha-russa infantil do Storybook Circus tem altura mínima de 89cm e velocidade de 40km/h. Qual é o nome dela?",opts:["Dumbo The Flying Elephant","The Barnstormer","Casey Jr. Splash","Pete's Silly Slideshow"],ans:1,tip:"A menor montanha-russa do Magic Kingdom! Perfeita para a primeira vez das crianças em uma montanha-russa de verdade.",ind:null},
+    {id:71,type:"multipla",q:"A famosa montanha-russa infantil do Storybook Circus é estrelada por qual personagem da Disney?",opts:["Pato Donald","Pateta como 'The Great Goofini'","Mickey Mouse","Cinderela"],ans:1,tip:"O brinquedo se chama The Barnstormer e é estrelado pelo Pateta em sua versão de acrobata de circo. Um detalhe que a maioria dos visitantes não sabe!",ind:null},
+    {id:72,type:"multipla",q:"Na área do Storybook Circus, o que os Imagineers misturaram no cimento do chão antes de secar?",opts:["Moedas de ouro falsas e ingressos rasgados","Amendoins falsos, pegadas de elefantes e marcas de rodas de carruagem de circo","Autógrafos de Walt Disney e animadores originais","Pipocas petrificadas de resina plástica"],ans:1,tip:"Os Imagineers criaram um chão narrativo para que as crianças sintam que as tendas do circo do Dumbo acabaram de ser montadas ali. Uma obra de arte no chão!",ind:null},
+    {id:73,type:"multipla",q:"Nas formações rochosas externas do Under the Sea — Journey of the Little Mermaid, qual personagem clássico está esculpido como easter egg?",opts:["Mr. Toad","O Rei Tritão","A Úrsula","O peixe Linguado"],ans:0,tip:"Os Imagineers esculpiram o rosto de Mr. Toad na rocha como homenagem à atração que existia antes. A versão original ainda está na Disneyland da Califórnia!",ind:"🎬 Indicado: A Pequena Sereia (1989) e versão live action (2023) — Disney+"},
+    {id:74,type:"multipla",q:"No centro da atração Mad Tea Party há um grande bule de chá. Qual personagem aparece de dentro do bule?",opts:["O Chapeleiro Maluco","O Ratinho dorminhoco (The Dormouse)","O Coelho Branco","O Gato de Cheshire"],ans:1,tip:"O Ratinho dorminhoco é visto saindo de dentro do bule gigante de chá no centro da atração, exatamente como no filme.",ind:"🎬 Indicado: Alice do País das Maravilhas (1951) e Alice no País das Maravilhas (2010) — Disney+"},
+    {id:75,type:"multipla",q:"Na atração Enchanted Tales with Belle, em qual cômodo ocorre a peça de teatro interativa onde os convidados ajudam a reencenar a história?",opts:["O Salão de Baile","A Oficina de Maurice","A Biblioteca","A Ala Oeste"],ans:2,tip:"A reencenação da história ocorre na belíssima Biblioteca do castelo, onde os convidados recebem papéis para participar da peça.",ind:"🎬 Indicado: A Bela e a Fera (1991) e live action (2017) — Disney+"},
+  ],
+  liberty: [
+    {id:80,type:"multipla",q:"O que é a Haunted Mansion no Magic Kingdom?",opts:["Um show de terror para maiores de 18 anos","Um passeio em carrinho por um labirinto mal-assombrado","Uma casa de terror onde você caminha pelos ambientes","Um filme 3D de terror da Disney"],ans:1,tip:"Uma das atrações mais queridas e icônicas do Magic Kingdom — tão famosa que está representada em outros parques Disney e nos navios da Disney ao redor do mundo!",ind:"🎬 Indicado: Mansão Mal Assombrada (2023) — Disney+"},
+    {id:81,type:"vf",q:"A loja Memento Mori na Liberty Square é considerada a antiga casa de Madame Leota, a médium em espírito que mora na Haunted Mansion.",ans:true,tip:"A loja tem uma história própria dentro do universo da Haunted Mansion. Fique atento aos segredos escondidos por toda ela — tem muito mais do que parece!",ind:null},
+    {id:82,type:"vf",q:"Na loja Memento Mori existe um espelho onde Madame Leota aparece algumas vezes.",ans:true,tip:"Fique parado em frente ao espelho por alguns instantes — Madame Leota pode aparecer a qualquer momento. Um momento mágico e assustador ao mesmo tempo!",ind:null},
+    {id:83,type:"multipla",q:"O que é o The Hall of Presidents no Magic Kingdom?",opts:["Um museu sobre a história dos Estados Unidos","Um show multimídia com filme histórico e presença de todos os presidentes dos EUA (animatrônicos)","Um encontro com personagens históricos americanos","Uma exposição de fotos dos presidentes americanos"],ans:1,tip:"Uma atração única — cada novo presidente eleito tem seu animatrônico adicionado ao show. Uma combinação fascinante de cinema e teatro ao vivo.",ind:"🎬 Indicado: Hamilton (2020) — Disney+"},
+    {id:84,type:"vf",q:"A Ye Old Christmas Shoppe na Liberty Square vende artigos de Natal apenas durante a temporada natalina.",ans:false,tip:"A loja funciona o ano todo! Você encontra bolas decorativas, guirlandas e meias de Natal com os personagens Disney em qualquer época do ano.",ind:null},
+    {id:85,type:"multipla",q:"O Country Bear Musical Jamboree é um show com ursos animatrônicos. Qual é a característica especial desses ursos?",opts:["Eles dançam balé clássico","Eles cantam músicas Disney em inglês com sotaque britânico","Eles cantam músicas icônicas da Disney com sotaque especial do Sul dos Estados Unidos","Eles contam histórias do folclore americano sem música"],ans:2,tip:"Um show clássico e muito querido — os ursos têm personalidade própria e o sotaque do Sul americano é parte do charme. Uma atração que encanta gerações desde 1971!",ind:null},
+    {id:86,type:"multipla",q:"O Columbia Harbour House (quick-service) na Liberty Square tem algo especial que poucos visitantes conhecem. Qual é?",opts:["Tem um cardápio secreto não listado no menu principal","Possui um andar superior climatizado que frequentemente está mais vazio","Oferece desconto para hóspedes de hotéis Disney","Tem uma janela com vista direta para a Haunted Mansion"],ans:1,tip:"Enquanto todo mundo disputa mesa no térreo, o andar de cima costuma estar bem mais tranquilo — e com ar condicionado! Uma dica de ouro para os dias mais quentes.",ind:null},
+    {id:87,type:"multipla",q:"Qual é a sobremesa destaque do Sleepy Hollow (quick-service) na Liberty Square?",opts:["Churros com calda de chocolate","Funnel Cake com frutas vermelhas — morango e mirtilos com chantilly","Waffle de churros no formato do Mickey","Bolo de cenoura com glacê de baunilha"],ans:1,tip:"Considerada uma das sobremesas mais gostosas de todo o Magic Kingdom! O Funnel Cake é uma massa frita aerada e crocante típica americana que você dificilmente encontra no Brasil.",ind:null},
+    {id:88,type:"vf",q:"O Liberty Tree Tavern e o The Diamond Horseshoe têm exatamente o mesmo cardápio.",ans:true,tip:"Mesma comida, experiências diferentes! O Liberty Tree Tavern tem atmosfera do século 18 e tende a lotar mais. O Diamond Horseshoe tem temática de velho oeste e costuma estar menos cheio. Ambos são table-service.",ind:null},
+    {id:89,type:"multipla",q:"Qual prato típico americano é destaque no Liberty Tree Tavern e no The Diamond Horseshoe?",opts:["Hamburguer artesanal com batatas fritas","Prato de Thanksgiving","Pizza artesanal com ingredientes americanos","Sanduíche de lagosta estilo Nova Inglaterra"],ans:1,tip:"O prato completo de Thanksgiving (Patriot's Platter) é composto por peru assado, purê de batatas e mac and cheese — o famoso macarrão com queijo americano!",ind:null},
+    {id:90,type:"multipla",q:"Na Liberty Square, o chão do meio da rua principal tem uma faixa marrom texturizada. O que ela representa historicamente?",opts:["O caminho dos cavalos de carga do século XVIII","O esgoto a céu aberto que corria pelas ruas das cidades americanas antes do encanamento moderno","Uma demarcação de onde as bruxas de Salem foram julgadas","O rastro de lama das carruagens da Revolução Americana"],ans:1,tip:"A Disney preza tanto pelo realismo histórico que imitou o esgoto colonial no chão. Por esse mesmo motivo, a Liberty Square é a única área sem banheiros dentro de seus limites!",ind:null},
+    {id:91,type:"multipla",q:"Na Liberty Square as persianas de muitas janelas estão tortas e caídas. Por que isso acontece na história da Disney?",opts:["Os colonos usaram as dobradiças de metal para fazer balas de canhão e as substituíram por tiras de couro que afrouxavam","É um defeito na construção original dos edifícios","Foram danificadas por um furacão e nunca consertadas"],ans:0,tip:"Durante a Revolução Americana, o metal das dobradiças era derretido para armas, deixando os colonos com dobradiças de couro que acabavam cedendo. Realismo histórico incrível!",ind:null},
+    {id:92,type:"multipla",q:"A Liberty Square possui uma réplica exata do famoso Sino da Liberdade. De qual cidade americana o sino original vem?",opts:["Boston","Washington D.C.","Filadélfia","Nova Iorque"],ans:2,tip:"O molde original foi usado para criar esta réplica. O Sino da Liberdade original fica na Filadélfia, Pensilvânia, e é um dos símbolos mais importantes da independência americana.",ind:null},
+    {id:93,type:"multipla",q:"No Sleepy Hollow (quick-service) na Liberty Square, qual é o lanche em formato de cone feito com massa de waffle?",opts:["Perna de Peru Gigante (Turkey Leg)","Hamburguer de Carne de Cervo","Fresh Fruit Waffle Sandwich ou Chicken Waffle","Clam Chowder"],ans:2,tip:"O Sleepy Hollow é famoso por seus sanduíches gigantes feitos com massa de waffle fresca dobrada ao meio, recheados com frango frito picante ou frutas frescas com Nutella.",ind:null},
+  ],
+  frontier: [
+    {id:100,type:"multipla",q:"Qual é a temática da Big Thunder Mountain no Magic Kingdom?",opts:["Uma corrida de carros antigos","Uma montanha-russa dentro de uma mina de ouro mal-assombrada","Uma viagem pelo Grand Canyon","Uma mina de diamantes encantada"],ans:1,tip:"Uma das montanhas-russas mais clássicas do Magic Kingdom! Estilo familiar, sem looping, com curvas rápidas ao ar livre simulando um trem desgovernado. Perfeita para toda a família.",ind:null},
+    {id:101,type:"multipla",q:"Qual é a altura mínima para andar na Big Thunder Mountain?",opts:["89cm","97cm","102cm","112cm"],ans:1,tip:"Com 58km/h e curvas rápidas ao ar livre, a Big Thunder Mountain é classificada como moderada — ideal para crianças que já passaram pelas montanhas-russas mais suaves.",ind:null},
+    {id:102,type:"multipla",q:"Existe um truque clássico na Big Thunder Mountain para sentir mais intensidade nas curvas. O que você deve fazer?",opts:["Olhar para o esqueleto de dinossauro","Olhar para o coiote uivando","Manter os olhos fixos no bode com dinamite na boca (Goat Trick)","Fechar os olhos"],ans:2,tip:"Se você mantiver os olhos fixos no bode enquanto o carrinho desce a curva, sua mente sentirá tontura e velocidade muito maior! Esse foco visual engana o ouvido interno e a percepção das forças G.",ind:null},
+    {id:103,type:"vf",q:"Um estudo científico publicado na PubMed demonstrou que o passeio na Big Thunder Mountain Railroad pode ajudar a eliminar pequenos cálculos renais — com taxa de sucesso de até 64% sentando nos bancos traseiros.",ans:true,tip:"Pesquisadores testaram um modelo de rim 3D de silicone na atração após relatos de pacientes. O banco de trás teve 64% de taxa de eliminação, contra apenas 17% no banco da frente!",ind:"🔗 pubmed.ncbi.nlm.nih.gov/27669068/"},
+    {id:104,type:"multipla",q:"A Big Thunder Mountain é conhecida como 'a corrida mais selvagem do deserto'. Qual é o nome da cidade mineradora fictícia onde a atração se passa?",opts:["Thunder Valley","Tumbleweed","Radiator Springs","Tombstone"],ans:1,tip:"A história conta que a cidade foi abandonada após uma inundação repentina provocada por forças sobrenaturais da montanha. Um detalhe narrativo que poucos visitantes conhecem!",ind:null},
+    {id:105,type:"vf",q:"A Tiana's Bayou Adventure substituiu a antiga atração Splash Mountain no Magic Kingdom.",ans:true,tip:"A Splash Mountain foi reformulada e em 2024 se tornou a Tiana's Bayou Adventure — um passeio de barco pelos cenários do filme A Princesa e o Sapo com uma emocionante queda de cachoeira no final!",ind:"🎬 Indicado: A Princesa e o Sapo (2009) — Disney+ · 🎵 Almost There, Down in New Orleans"},
+    {id:106,type:"multipla",q:"Qual filme da Disney inspirou a atração Tiana's Bayou Adventure?",opts:["Moana","A Princesa e o Sapo","Enrolados","A Bela e a Fera"],ans:1,tip:"Tiana é a primeira princesa negra da Disney! A atração é inspirada na cidade de Nova Orleans e no bayou — região de pântanos e canais característica do sul dos Estados Unidos.",ind:null},
+    {id:107,type:"multipla",q:"Qual é a velocidade da queda principal da Tiana's Bayou Adventure?",opts:["45km/h","55km/h","64km/h","80km/h"],ans:2,tip:"Apesar de ser classificada como splash ride — atração aquática — a queda principal atinge 64km/h! A altura mínima é de 102cm. Prepare-se para se molhar!",ind:null},
+    {id:108,type:"multipla",q:"Na atração Tiana's Bayou Adventure, existem quantos vagalumes no total?",opts:["1.999","2.001","2.009","2.039"],ans:2,tip:"Exatamente 2.009 vagalumes — uma referência direta ao ano de lançamento do filme A Princesa e o Sapo (2009)!",ind:null},
+    {id:109,type:"multipla",q:"Na fila da Tiana's Bayou Adventure, qual item importante na trama do desenho pode ser visto na cozinha da Tiana?",opts:["O livro de feitiços do Dr. Facilier","A panela de barro original onde ela e seu pai faziam gumbo","O beignet açucarado da Tiana","A Tiara de princesa da Tiana"],ans:1,tip:"Ela fica guardada embaixo da bancada da cozinha — uma referência direta e emocionante ao início do filme.",ind:null},
+    {id:110,type:"multipla",q:"Qual é a especialidade gastronômica do Golden Oak Outpost (quick-service) no Frontierland — inspirada na culinária de Nova Orleans?",opts:["Gumbo e arroz cajun","Beignet e limonada de lavanda","Poboy sandwich e sweet tea","Jambalaya e biscuits"],ans:1,tip:"O beignet é um bolinho frito típico de Nova Orleans polvilhado com açúcar de confeiteiro — especialidade da Tiana no filme! A limonada de lavanda é inspirada na influência francesa da gastronomia de Nova Orleans.",ind:null},
+  ],
+  adventure: [
+    {id:115,type:"vf",q:"O Capitão Jack Sparrow faz parte da atração Pirates of the Caribbean desde a sua inauguração.",ans:false,tip:"O Capitão Jack Sparrow foi adicionado à atração apenas depois do enorme sucesso da saga Piratas do Caribe no cinema! A atração original é de 1973 — foi ela que inspirou a criação da franquia.",ind:"🎬 Indicado: Saga Piratas do Caribe — Disney+"},
+    {id:116,type:"vf",q:"O Beak and Barrel na Adventureland é o primeiro bar inaugurado dentro do Magic Kingdom.",ans:true,tip:"Por muitos anos o Magic Kingdom não servia bebidas alcoólicas — era uma decisão pessoal de Walt Disney. O Beak and Barrel foi um marco histórico ao inaugurar o primeiro bar do parque!",ind:null},
+    {id:117,type:"multipla",q:"Quantos animatrônicos estão presentes na atração Pirates of the Caribbean do Magic Kingdom?",opts:["94","70","126","55"],ans:2,tip:"Um total de 126 Audio-Animatronics — figuras robóticas complexas — entre piratas e animais compõem o cenário da atração.",ind:null},
+    {id:118,type:"multipla",q:"Quantos Jack Sparrows estão presentes na atração Pirates of the Caribbean do Magic Kingdom?",opts:["1","2","3","4"],ans:2,tip:"São 3 animatrônicos do Jack Sparrow + 1 projeção em névoa de água logo na primeira caverna escura. Total de 4 aparições do personagem!",ind:null},
+    {id:119,type:"vf",q:"A atração Pirates of the Caribbean utiliza a tecnologia Smellitizer em diferentes cenas para intensificar a experiência no ambiente marítimo e pirata.",ans:true,tip:"A atração usa a tecnologia para produzir cheiro de queimado e rum doce em cenas específicas!",ind:null},
+    {id:120,type:"vf",q:"O cheiro mais famoso e nostálgico da atração Pirates of the Caribbean — de água úmida, caverna e 'mofo limpo' — não vem de um Smellitizer.",ans:true,tip:"O cheiro mais marcante da atração vem da forma de tratamento da água. A Disney trata os milhões de litros de água com bromo em vez de cloro, gerando aquele aroma marítimo úmido e viciante que os fãs adoram.",ind:null},
+    {id:121,type:"multipla",q:"A Pirates Adventure — Treasures of the Seven Seas é uma experiência interativa de caça ao tesouro na Adventureland. Quantas missões ela oferece?",opts:["3 missões","5 missões","7 missões","10 missões"],ans:1,tip:"Você deve ir até o posto de comando (The Crow's Nest), uma pequena cabana entre a atração Pirates of the Caribbean e a área da Frontierland, para receber um mapa. Cada missão dura cerca de 15 a 20 minutos.",ind:null},
+    {id:122,type:"vf",q:"Na atração The Magic Carpets of Aladdin quem senta na frente controla a altura do tapete.",ans:true,tip:"Quem senta na frente controla a altura e quem senta atrás controla a inclinação! Uma atração divertida para toda a família — e o encontro com Jasmin e Aladdin acontece nessa mesma área.",ind:"🎬 Indicado: Aladdin (1992) e live action Aladdin (2019) — Disney+"},
+    {id:123,type:"vf",q:"No The Magic Carpets of Aladdin existe um camelo que cospe água nos passageiros durante o passeio.",ans:true,tip:"Um dos detalhes mais divertidos e inesperados da atração! O camelo na entrada cospe jatos de água nos passageiros dos tapetes — fique de olho para desviar ou se preparar para se molhar!",ind:null},
+    {id:124,type:"multipla",q:"O Jungle Cruise ganha uma versão especial durante o Natal. Qual é o nome dessa versão?",opts:["Christmas Cruise","Holiday Jungle","Jingle Cruise","Santa's Jungle"],ans:2,tip:"Uma das transformações sazonais mais charmosas do Magic Kingdom! O guia continua com as piadas clássicas mas tudo ganha decoração natalina.",ind:"🎬 Indicado: Jungle Cruise (2021) — Disney+"},
+    {id:125,type:"vf",q:"A atração Jungle Cruise passa por três regiões de rios tropicais ao redor do mundo.",ans:false,tip:"A atração passa por 4 regiões: rio Mekong (Ásia), rio Congo (África), rio Nilo (África) e rio Amazonas (América do Sul). Dica: a atração realizada à noite possui iluminação especial que faz os animais parecerem muito mais reais!",ind:null},
+    {id:126,type:"vf",q:"O Walt Disney's Enchanted Tiki Room é um show agitado com muita ação e efeitos especiais intensos.",ans:false,tip:"O Tiki Room é exatamente o oposto — um show relaxante e contemplativo com pássaros tropicais, flores e estátuas animatrônicas cantando. Perfeito para uma pausa tranquila no meio do dia agitado.",ind:null},
+    {id:127,type:"multipla",q:"O Walt Disney's Enchanted Tiki Room tem quatro araras coloridas como mestres de cerimônias. Quais são os nomes desses quatro pássaros?",opts:["José, Michael, Pierre e Fritz","Donald, Zé Carioca, Panchito e Pateta","Iago, Zazu, Flit e Abu"],ans:0,tip:"Cada um representa uma nacionalidade diferente: José é mexicano/espanhol, Michael é irlandês, Pierre é francês e Fritz é alemão. Sotaques divertidíssimos!",ind:null},
+    {id:128,type:"multipla",q:"A atração Swiss Family Treehouse é baseada em qual filme da Disney?",opts:["Tarzan","A Família Robinson Suíça de 1960","O Livro da Selva","Peter Pan"],ans:1,tip:"A Swiss Family Treehouse é uma atração walk-through — não tem filas. É um passeio pela enorme casa na árvore construída pelos personagens do filme que naufragaram em uma ilha deserta.",ind:"🎬 Indicado: A família Robinson — Disney+"},
+    {id:129,type:"multipla",q:"Qual é o sorvete mais famoso do Aloha Isle (quick-service) na Adventureland?",opts:["Sorvete de chocolate com coco","Dole Whip de abacaxi","Sorvete de manga com maracujá","Milkshake de morango tropical"],ans:1,tip:"O Dole Whip é um dos sorvetes mais famosos e fotografados de todo o Magic Kingdom — disponível nos sabores abacaxi, baunilha ou misto. Uma fila que vale muito a pena enfrentar!",ind:null},
+    {id:130,type:"multipla",q:"Qual é o float destaque do Sunshine Tree Terrace (quick-service) na Adventureland?",opts:["Float de morango com Fanta laranja","I Lava You Float — sorvete de laranja com Fanta morango e calda de maracujá vermelho","Float de abacaxi com Sprite e coco","Float de baunilha com Coca-Cola e caramelo"],ans:1,tip:"O nome é uma referência ao curta metragem Lava da Pixar — um vulcão apaixonado! Sorvete de laranja com Fanta morango e calda de maracujá vermelho. Muito refrescante para o calor da Flórida.",ind:"🎬 Indicado: curta Lava — Disney+"},
+    {id:131,type:"multipla",q:"Qual é o estilo culinário do Jungle Navigation Co. LTD Skipper Canteen (table-service) na Adventureland?",opts:["Culinária americana clássica","Culinária africana, asiática e latina","Culinária caribenha e mexicana","Culinária francesa e italiana"],ans:1,tip:"Um dos restaurantes mais temáticos e únicos do Magic Kingdom! A temática segue a aventura do Jungle Cruise — você come em um acampamento de exploradores com histórias e piadas na decoração.",ind:null},
+  ],
+  shows: [
+    {id:135,type:"multipla",q:"Qual é o show de fogos de encerramento do Magic Kingdom?",opts:["Disney Enchantment","Happily Ever After","Disney Starlight","Not-So-Spooky Spectacular"],ans:1,tip:"Um show de 18 minutos que acontece na maioria das noites às 22h em frente ao Castelo da Cinderela.",ind:"🎵 Ouça antes: Happily Ever After — Jordan Fisher & Angie Keilhauer"},
+    {id:136,type:"vf",q:"O Happily Ever After acontece todas as noites no Magic Kingdom sem exceção.",ans:false,tip:"O show pode ser cancelado por condições climáticas ou eventos especiais. Sempre confirme no app My Disney Experience no dia da visita!",ind:null},
+    {id:137,type:"multipla",q:"Qual é a duração da Disney Festival of Fantasy Parade?",opts:["5 minutos","12 minutos","20 minutos","30 minutos"],ans:1,tip:"A parada diurna das 15h traz carros alegóricos grandiosos e personagens clássicos. No inverno veja na praça em frente ao castelo. No verão prefira o Frontier Trading Post — a parada passa mais rápido e você escapa do sol!",ind:null},
+    {id:138,type:"vf",q:"A Disney Starlight é uma parada noturna com carros alegóricos iluminados e efeitos especiais tecnológicos.",ans:true,tip:"Acontece geralmente em dois horários — 21h e 23h. Todo iluminado com muita tecnologia e efeitos especiais — completamente diferente da parada diurna. Vale ver as duas para comparar!",ind:null},
+    {id:139,type:"multipla",q:"O Mickey's Not-So-Scary Halloween Party tem um show de fogos exclusivo. Qual é o nome?",opts:["Happily Ever After Halloween","Disney's Not-So-Spooky Spectacular","Mickey's Boo-To-You Fireworks","Halloween Enchantment"],ans:1,tip:"Um show de fogos de 12 minutos criado exclusivamente para a festa de Halloween — completamente diferente do Happily Ever After. A festa também tem a Mickey's Boo-To-You Halloween Parade!",ind:"🎬 Indicado: O Estranho Mundo de Jack (1993), Hocus Pocus (1993) e Hocus Pocus 2 (2022) — Disney+"},
+    {id:140,type:"vf",q:"O Mickey's Not-So-Scary Halloween Party exige ingresso separado do ingresso normal do parque.",ans:true,tip:"As festas especiais da Disney têm ingresso próprio e separado! O parque fecha para os visitantes regulares e apenas os portadores do ingresso da festa podem entrar — geralmente a partir das 19h.",ind:null},
+    {id:141,type:"multipla",q:"O evento Disney After Hours inclui snacks gratuitamente além das filas menores. O que está incluso no ingresso?",opts:["Sorvete do Mickey, pipoca e bebidas engarrafadas liberados e gratuitos","Um jantar completo com as princesas no castelo","Desconto de 50% em todas as lojas do parque","Acesso ilimitado a todas as atrações sem fila"],ans:0,tip:"Carrinhos espalhados pelo parque distribuem esses snacks à vontade durante o evento. Uma vantagem incrível que poucas pessoas sabem!",ind:null},
+    {id:142,type:"multipla",q:"Qual é o horário do evento Disney After Hours no Magic Kingdom?",opts:["20h à meia-noite","22h à 1h","21h à meia-noite","23h às 2h"],ans:1,tip:"Com muito menos gente no parque você consegue fazer atrações sem filas enormes! O evento também tem show de fogos exclusivo chamado Disney Enchantment.",ind:null},
+    {id:143,type:"vf",q:"O Mickey's Very Merry Christmas Party tem tanto parada temática quanto show de fogos especial de Natal.",ans:true,tip:"A festa natalina tem tudo — Mickey's Once Upon a Christmastime Parade, Minnie's Wonderful Christmastime Fireworks e ainda o Mickey's Most Merriest Celebration no palco do castelo!",ind:"🎬 Indicado: O Conto de Natal de Mickey (1983) — Disney+"},
+    {id:144,type:"multipla",q:"Qual é a melhor estratégia para ver a Disney Festival of Fantasy Parade no verão?",opts:["Chegar cedo e ocupar lugar na praça em frente ao castelo","Ver a parada em frente ao Frontier Trading Post — a parada passa mais rápido e você escapa do sol","Assistir de dentro de um restaurante com janela para a rua","Ver do segundo andar do Crystal Palace"],ans:1,tip:"No inverno a praça do castelo é perfeita. No verão o sol forte da Flórida torna aquela área insuportável! No Frontierland a parada passa mais rápido e você fica mais na sombra — uma dica de ouro!",ind:null},
+  ],
+};
+
+// ── CONFIGURAÇÃO ─────────────────────────────────────────────────────────────
+const AREAS = [
+  { id: "main",      label: "Main Street U.S.A.", emoji: "🏘️", color: "#E8A838" },
+  { id: "tomorrow",  label: "Tomorrowland",        emoji: "🚀", color: "#4A90D9" },
+  { id: "fantasy",   label: "Fantasyland",          emoji: "✨", color: "#9B59B6" },
+  { id: "liberty",   label: "Liberty Square",       emoji: "🔔", color: "#C0392B" },
+  { id: "frontier",  label: "Frontierland",         emoji: "🤠", color: "#A0522D" },
+  { id: "adventure", label: "Adventureland",        emoji: "🌴", color: "#27AE60" },
+  { id: "shows",     label: "Shows e Paradas",      emoji: "🎆", color: "#E91E8C" },
+];
+
+const EMOJI_MAP = {
+  F: { child: "👧", teen: "👧", adult: "👩", senior: "👵" },
+  M: { child: "👦", teen: "👦", adult: "👨", senior: "👴" },
+};
+
+function getEmoji(sex, age) {
+  const s = EMOJI_MAP[sex] || EMOJI_MAP["M"];
+  if (age <= 12) return s.child;
+  if (age <= 17) return s.teen;
+  if (age <= 59) return s.adult;
+  return s.senior;
+}
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+// ── ESTADO GLOBAL ─────────────────────────────────────────────────────────────
+const STATE = {
+  screen: "cadastro_org",
+  organizer: null,      // { name, email }
+  players: [],          // [{ name, emoji }]
+  playerCount: 0,
+  currentPlayerSetup: 0,
+  area: null,
+  currentPlayer: null,
+  qIndex: 0,
+  scores: {},
+  answered: {},
+  orderItems: {},
+  favorites: new Set(),
+  surveyDone: false,
+};
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  app.className = "fade-in";
+
+  switch (STATE.screen) {
+    case "cadastro_org":       renderCadastroOrg(); break;
+    case "cadastro_count":     renderCadastroCount(); break;
+    case "cadastro_player":    renderCadastroPlayer(); break;
+    case "home":               renderHome(); break;
+    case "area_select":        renderAreaSelect(); break;
+    case "player_select":      renderPlayerSelect(); break;
+    case "quiz":               renderQuiz(); break;
+    case "result":             renderResult(); break;
+    case "ranking":            renderRanking(); break;
+    case "favorites":          renderFavorites(); break;
+    case "survey":             renderSurvey(); break;
+    case "survey_thanks":      renderSurveyThanks(); break;
+  }
+}
+
+// ── CADASTRO 1 — ORGANIZADOR ──────────────────────────────────────────────────
+function renderCadastroOrg() {
+  html(`
+    <div class="screen center">
+      <div class="flower-wrap">${flowerSVG(72)}</div>
+      <div class="logo-big">Trip<span>loom</span></div>
+      <div class="subtitle">A viagem começa aqui</div>
+      <p style="font-size:14px;color:var(--gray-light);margin-top:20px;line-height:1.7;max-width:280px">
+        Quiz interativo para famílias brasileiras que vão ao Magic Kingdom 🏰
+      </p>
+      <div class="card" style="margin-top:28px;text-align:left;width:100%;max-width:360px">
+        <div class="section-label" style="margin-bottom:16px">Quem está organizando o quiz?</div>
+        <label class="field-label">Seu nome</label>
+        <input id="org-name" class="field" type="text" placeholder="Ex: Ana Silva" autocomplete="name">
+        <label class="field-label" style="margin-top:12px">Seu e-mail</label>
+        <input id="org-email" class="field" type="email" placeholder="Ex: ana@email.com" autocomplete="email">
+      </div>
+      <button class="btn-primary" style="margin-top:16px;max-width:360px" onclick="submitOrg()">Continuar →</button>
+      <p style="font-size:11px;color:var(--gray);margin-top:14px;max-width:280px;line-height:1.6">
+        🔒 Seus dados são usados apenas para personalizar o quiz e melhorar o Triploom.
+      </p>
+    </div>
+  `);
+}
+
+function submitOrg() {
+  const name = val("org-name").trim();
+  const email = val("org-email").trim();
+  if (!name) { shake("org-name"); return; }
+  if (!email || !email.includes("@")) { shake("org-email"); return; }
+  STATE.organizer = { name, email };
+  STATE.screen = "cadastro_count";
+  render();
+}
+
+// ── CADASTRO 2 — QUANTIDADE ───────────────────────────────────────────────────
+function renderCadastroCount() {
+  html(`
+    <div class="screen center">
+      ${flowerSVG(48)}
+      <div class="logo-big" style="margin-top:12px">Trip<span>loom</span></div>
+      <div class="card" style="margin-top:28px;width:100%;max-width:360px">
+        <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px">Olá, ${STATE.organizer.name}! 🌸</div>
+        <p style="color:var(--gray);font-size:13px;line-height:1.6;margin-bottom:20px">
+          Você vai cadastrar as pessoas do seu grupo agora.<br>
+          Quantas pessoas vão participar? <span style="color:var(--coral)">(incluindo você)</span>
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          ${[2,3,4,5,6,7,8].map(n => `
+            <button class="count-btn" onclick="selectCount(${n})">${n}</button>
+          `).join("")}
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--gray);margin-top:16px;max-width:280px;line-height:1.6">
+        💡 Cada pessoa vai ter seu próprio perfil e pontuação no ranking.
+      </p>
+    </div>
+  `);
+}
+
+function selectCount(n) {
+  STATE.playerCount = n;
+  STATE.players = [];
+  STATE.currentPlayerSetup = 0;
+  STATE.screen = "cadastro_player";
+  render();
+}
+
+// ── CADASTRO 3 — JOGADORES ────────────────────────────────────────────────────
+function renderCadastroPlayer() {
+  const i = STATE.currentPlayerSetup;
+  const total = STATE.playerCount;
+  const pct = (i / total) * 100;
+  html(`
+    <div class="screen">
+      <div style="padding:20px 20px 0">
+        <div style="font-size:12px;color:var(--gray);margin-bottom:8px">Jogador ${i + 1} de ${total}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--coral)"></div></div>
+      </div>
+      <div style="padding:20px">
+        <div class="card">
+          <div class="section-label" style="margin-bottom:16px">👤 Dados do jogador ${i + 1}</div>
+          <label class="field-label">Nome</label>
+          <input id="p-name" class="field" type="text" placeholder="Ex: Pedro" autocomplete="off">
+          <label class="field-label" style="margin-top:14px">Sexo</label>
+          <div style="display:flex;gap:10px;margin-top:6px">
+            <button class="sex-btn" id="btn-F" onclick="selectSex('F')">👩 Feminino</button>
+            <button class="sex-btn" id="btn-M" onclick="selectSex('M')">👨 Masculino</button>
+          </div>
+          <label class="field-label" style="margin-top:14px">Faixa etária</label>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+            <button class="age-btn" id="age-child" onclick="selectAge('child')">👶 Criança (até 12 anos)</button>
+            <button class="age-btn" id="age-teen" onclick="selectAge('teen')">🧒 Adolescente (13 a 17 anos)</button>
+            <button class="age-btn" id="age-adult" onclick="selectAge('adult')">🧑 Adulto (18 a 59 anos)</button>
+            <button class="age-btn" id="age-senior" onclick="selectAge('senior')">🧓 Idoso (60 anos ou mais)</button>
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-top:16px" onclick="submitPlayer()">
+          ${i + 1 < total ? "Próximo jogador →" : "Começar o Quiz 🎉"}
+        </button>
+      </div>
+    </div>
+  `);
+  window._selectedSex = null;
+  window._selectedAge = null;
+}
+
+function selectSex(s) {
+  window._selectedSex = s;
+  document.querySelectorAll(".sex-btn").forEach(b => b.classList.remove("selected"));
+  document.getElementById("btn-" + s).classList.add("selected");
+}
+
+function selectAge(a) {
+  window._selectedAge = a;
+  document.querySelectorAll(".age-btn").forEach(b => b.classList.remove("selected"));
+  document.getElementById("age-" + a).classList.add("selected");
+}
+
+function submitPlayer() {
+  const name = val("p-name").trim();
+  if (!name) { shake("p-name"); return; }
+  if (!window._selectedSex) { alert("Selecione o sexo"); return; }
+  if (!window._selectedAge) { alert("Selecione a faixa etária"); return; }
+
+  const ageMap = { child: 8, teen: 15, adult: 30, senior: 65 };
+  const emoji = getEmoji(window._selectedSex, ageMap[window._selectedAge]);
+  STATE.players.push({ name, emoji });
+  STATE.scores[name] = 0;
+
+  STATE.currentPlayerSetup++;
+  if (STATE.currentPlayerSetup < STATE.playerCount) {
+    STATE.screen = "cadastro_player";
+  } else {
+    STATE.screen = "home";
+    saveToLocalStorage();
+  }
+  render();
+}
+
+// ── HOME ──────────────────────────────────────────────────────────────────────
+function renderHome() {
+  const sorted = getSorted();
+  const hasScores = sorted.some(([, s]) => s > 0);
+  const favCount = STATE.favorites.size;
+
+  html(`
+    <div class="screen" style="padding:24px 20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+        ${flowerSVG(30)}
+        <div>
+          <div class="logo-small">Trip<span>loom</span></div>
+          <div class="subtitle-small">Magic Kingdom</div>
+        </div>
+      </div>
+
+      ${hasScores ? `
+        <div class="card" style="margin-bottom:18px">
+          <div class="section-label" style="margin-bottom:10px">🏆 Ranking do grupo</div>
+          ${sorted.map(([name, score], i) => {
+            const p = STATE.players.find(p => p.name === name);
+            return `<div class="rank-row">
+              <span style="font-size:14px">${["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣"][i]}</span>
+              <span style="font-size:16px">${p ? p.emoji : "👤"}</span>
+              <span style="flex:1;color:${i===0?"var(--coral)":"var(--gray-light)"};font-size:13px;font-weight:${i===0?700:400}">${name}</span>
+              <span style="color:${i===0?"var(--coral)":"var(--gray)"};font-weight:700;font-size:13px">${score} pts</span>
+            </div>`;
+          }).join("")}
+        </div>
+      ` : ""}
+
+      <div class="section-label" style="margin-bottom:12px">Escolha uma área para jogar</div>
+      ${AREAS.map(a => {
+        const count = (PERGUNTAS[a.id] || []).length;
+        return `<button class="area-btn" style="border-color:${a.color}50;background:${a.color}15" onclick="goTo('area_select','${a.id}')">
+          <span style="font-size:22px;width:30px;text-align:center">${a.emoji}</span>
+          <div style="flex:1">
+            <div style="color:#fff;font-weight:700;font-size:14px">${a.label}</div>
+            <div style="color:var(--gray);font-size:11px;margin-top:2px">${count} perguntas</div>
+          </div>
+          <span style="color:${a.color};font-weight:700;font-size:18px">→</span>
+        </button>`;
+      }).join("")}
+
+      <button class="btn-outline" style="margin-top:14px" onclick="go('ranking')">🏆 Ver Ranking Completo</button>
+      ${favCount > 0 ? `<button class="btn-outline" style="margin-top:8px" onclick="go('favorites')">⭐ Favoritas (${favCount})</button>` : ""}
+      ${!STATE.surveyDone ? `<button class="btn-outline" style="margin-top:8px;border-color:#9B59B6;color:#9B59B6" onclick="go('survey')">📝 Dar Feedback</button>` : ""}
+    </div>
+  `);
+}
+
+function goTo(screen, areaId) {
+  STATE.area = areaId;
+  STATE.screen = screen;
+  STATE.qIndex = 0;
+  STATE.currentPlayer = null;
+  render();
+}
+
+// ── PLAYER SELECT ─────────────────────────────────────────────────────────────
+function renderPlayerSelect() {
+  const a = AREAS.find(x => x.id === STATE.area);
+  const count = (PERGUNTAS[STATE.area] || []).length;
+  html(`
+    <div class="screen" style="padding:24px 20px">
+      <button class="btn-back" onclick="go('home')">← Voltar</button>
+      <div style="text-align:center;margin-bottom:22px">
+        <div style="font-size:36px">${a.emoji}</div>
+        <div style="font-family:Georgia,serif;font-size:18px;color:#fff;margin-top:8px">${a.label}</div>
+        <div style="color:var(--gray);font-size:12px;margin-top:4px">${count} perguntas</div>
+      </div>
+      <div class="section-label" style="margin-bottom:12px">Quem vai jogar agora?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${STATE.players.map(p => `
+          <button class="player-btn ${STATE.currentPlayer === p.name ? "selected" : ""}"
+            style="border-color:${STATE.currentPlayer === p.name ? a.color : "var(--line)"};background:${STATE.currentPlayer === p.name ? a.color + "22" : "var(--card)"}"
+            onclick="selectPlayer('${p.name}')">
+            <div style="font-size:28px">${p.emoji}</div>
+            <div style="color:#fff;font-weight:700;font-size:13px;margin-top:6px">${p.name}</div>
+            <div style="color:${a.color};font-size:11px;font-weight:700;margin-top:2px">${STATE.scores[p.name] || 0} pts</div>
+          </button>
+        `).join("")}
+      </div>
+      ${STATE.currentPlayer ? `<button class="btn-primary" style="margin-top:18px;background:${a.color}" onclick="startQuiz()">Começar →</button>` : ""}
+    </div>
+  `);
+}
+
+function renderAreaSelect() {
+  STATE.screen = "player_select";
+  render();
+}
+
+function selectPlayer(name) {
+  STATE.currentPlayer = name;
+  render();
+}
+
+function startQuiz() {
+  STATE.qIndex = 0;
+  STATE.screen = "quiz";
+  render();
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────────────────────
+function renderQuiz() {
+  const questions = PERGUNTAS[STATE.area] || [];
+  const q = questions[STATE.qIndex];
+  if (!q) { go("result"); return; }
+
+  const a = AREAS.find(x => x.id === STATE.area);
+  const color = a.color;
+  const pct = ((STATE.qIndex + 1) / questions.length) * 100;
+  const qAns = STATE.answered[q.id] || null;
+  const isAnswered = !!qAns;
+  const hasNext = STATE.qIndex + 1 < questions.length;
+  const isFav = STATE.favorites.has(q.id);
+  const player = STATE.players.find(p => p.name === STATE.currentPlayer);
+
+  if (q.type === "ordenar" && !STATE.orderItems[q.id]) {
+    STATE.orderItems[q.id] = shuffle(q.items.map((_, i) => i));
+  }
+  const order = STATE.orderItems[q.id] || q.items.map((_, i) => i);
+
+  let qHtml = "";
+  if (q.type === "multipla") qHtml = renderMultipla(q, qAns, color, hasNext);
+  else if (q.type === "vf")   qHtml = renderVF(q, qAns, color, hasNext);
+  else if (q.type === "ordenar") qHtml = renderOrdenar(q, qAns, order, color, hasNext);
+  else if (q.type === "complete") qHtml = renderComplete(q, qAns, color, hasNext);
+
+  html(`
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 0">
+        <button onclick="goBackQuiz()" style="background:none;border:none;color:var(--gray);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1">←</button>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:14px">${player ? player.emoji : "👤"}</span>
+          <span style="font-size:11px;font-weight:700;color:#fff">${STATE.currentPlayer}</span>
+          <span style="font-size:9px;color:${color};font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:4px">${a.emoji} ${a.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button onclick="toggleFav(${q.id})"
+            style="background:${isFav ? "rgba(255,215,0,0.15)" : "none"};border:${isFav ? "1px solid #FFD700" : "none"};border-radius:8px;font-size:15px;cursor:pointer;padding:3px 6px;line-height:1">
+            ${isFav ? "⭐" : "☆"}
+          </button>
+          ${isAnswered && hasNext ? `<button onclick="nextQ()" style="background:none;border:none;color:${color};font-size:22px;cursor:pointer;padding:4px 8px;line-height:1">→</button>` : `<span style="width:38px"></span>`}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 18px 0">
+        <span style="font-size:9px;color:${color};font-weight:700;letter-spacing:1.5px;text-transform:uppercase">${a.label}</span>
+        <span style="font-size:10px;color:var(--gray);font-weight:600">${STATE.qIndex + 1}/${questions.length}</span>
+      </div>
+      <div class="progress-bar" style="margin:8px 18px 0">
+        <div class="progress-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+
+      <div style="padding:14px 18px 32px">
+        ${isAnswered ? `
+          <div style="background:rgba(95,191,143,0.1);border:1px solid #5FBF8F;border-radius:10px;padding:7px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:11px;color:#5FBF8F;font-weight:600">✓ Já respondida — navegando livremente</span>
+            ${hasNext ? `<button onclick="nextQ()" style="background:none;border:none;color:#5FBF8F;font-size:11px;font-weight:700;cursor:pointer;padding:0">Avançar →</button>` : ""}
+          </div>
+        ` : ""}
+
+        ${q.ind ? `
+          <div style="background:rgba(244,132,95,0.1);border-left:3px solid var(--coral);padding:8px 10px;border-radius:0 8px 8px 0;margin-bottom:12px">
+            <div style="font-size:11px;color:#FABC9A;line-height:1.5">${q.ind}</div>
+          </div>
+        ` : ""}
+
+        ${qHtml}
+      </div>
+    </div>
+  `);
+}
+
+function renderMultipla(q, qAns, color, hasNext) {
+  const sel = qAns ? qAns.selected : null;
+  const fb = sel !== null;
+  const opts = q.opts.map((op, i) => {
+    let bg = "var(--card)", border = "var(--line)", tc = "#fff";
+    if (fb) {
+      if (i === q.ans) { bg = "#E8F7EF"; border = "#5FBF8F"; tc = "#166534"; }
+      else if (i === sel) { bg = "#FDEAE5"; border = "#E8674A"; tc = "#7F1D1D"; }
+    }
+    return `<button onclick="${fb ? "" : `answerMultipla(${i})`}"
+      style="display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:11px;border:1.5px solid ${border};background:${bg};cursor:${fb ? "default" : "pointer"};text-align:left;width:100%;font-family:inherit;margin-bottom:8px">
+      <span style="width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;flex-shrink:0;background:${fb && i === q.ans ? "#5FBF8F" : fb && i === sel ? "#E8674A" : "var(--line)"};color:#fff">${["A","B","C","D"][i]}</span>
+      <span style="font-size:13px;font-weight:500;color:${tc}">${op}</span>
+    </button>`;
+  }).join("");
+  return `<div style="font-size:15px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:14px">${q.q}</div>
+    ${opts}
+    ${fb ? feedbackBox(sel === q.ans, q.tip, hasNext, color) : ""}`;
+}
+
+function renderVF(q, qAns, color, hasNext) {
+  const sel = qAns ? qAns.selected : null;
+  const fb = sel !== null;
+  const btns = [true, false].map(v => {
+    let bg = "var(--card)", border = "var(--line)", opacity = 1, tc = "#fff";
+    if (fb) {
+      if (v === q.ans) { bg = "#E8F7EF"; border = "#5FBF8F"; tc = "#166534"; }
+      else opacity = 0.35;
+    }
+    const clickFn = fb ? "" : `answerVF(${v ? 1 : 0})`;
+    return `<button onclick="${clickFn}"
+      style="flex:1;padding:15px 10px;border-radius:13px;border:1.5px solid ${border};background:${bg};color:${tc};font-size:13px;font-weight:700;cursor:${fb ? "default" : "pointer"};opacity:${opacity};font-family:inherit">
+      ${v ? "✅ Verdadeiro" : "❌ Falso"}
+    </button>`;
+  }).join("");
+  return `<div style="font-size:15px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:16px">${q.q}</div>
+    <div style="display:flex;gap:10px;">${btns}</div>
+    ${fb ? feedbackBox(sel === q.ans, q.tip, hasNext, color) : ""}`;
+}
+
+function renderOrdenar(q, qAns, order, color, hasNext) {
+  const checked = qAns ? qAns.checked : null;
+  const items = order.map((idx, pos) => {
+    let bg = "var(--card)", border = "var(--line)", tc = "#fff", numBg = color;
+    if (checked) {
+      const ok = q.correctOrder[pos] === idx;
+      bg = ok ? "#E8F7EF" : "#FDEAE5";
+      border = ok ? "#5FBF8F" : "#E8674A";
+      tc = ok ? "#166534" : "#7F1D1D";
+      numBg = border;
+    }
+    return `<div style="display:flex;align-items:center;gap:9px;padding:11px 13px;border-radius:11px;border:1.5px solid ${border};background:${bg};margin-bottom:7px">
+      <span style="width:22px;height:22px;border-radius:6px;background:${numBg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;flex-shrink:0">${pos + 1}</span>
+      <span style="flex:1;font-size:13px;font-weight:500;color:${tc}">${q.items[idx]}</span>
+      ${!checked ? `<div style="display:flex;flex-direction:column;gap:2px">
+        <button onclick="moveOrder(${pos},-1)" ${pos === 0 ? "disabled" : ""} style="width:22px;height:15px;border-radius:4px;border:1px solid var(--line);background:var(--navy);color:#fff;font-size:8px;cursor:pointer;opacity:${pos === 0 ? 0.3 : 1}">▲</button>
+        <button onclick="moveOrder(${pos},1)" ${pos === order.length - 1 ? "disabled" : ""} style="width:22px;height:15px;border-radius:4px;border:1px solid var(--line);background:var(--navy);color:#fff;font-size:8px;cursor:pointer;opacity:${pos === order.length - 1 ? 0.3 : 1}">▼</button>
+      </div>` : ""}
+    </div>`;
+  }).join("");
+
+  const action = !checked
+    ? `<button onclick="checkOrder()" style="display:block;width:100%;padding:14px;border-radius:14px;border:none;background:${color};color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px">Confirmar Ordem</button>`
+    : `<div style="margin-top:12px;padding:11px 13px;border-radius:11px;font-size:12px;font-weight:600;line-height:1.5;background:${checked === "ok" ? "#E8F7EF" : "#FDEAE5"};color:${checked === "ok" ? "#166534" : "#7F1D1D"}">
+        ${checked === "ok" ? "✅ Correto! +25 pontos" : "❌ Não foi dessa vez..."}
+        ${q.tip ? `<div style="font-size:11px;margin-top:5px;font-weight:400">💡 ${q.tip}</div>` : ""}
+      </div>
+      <button onclick="nextQ()" style="display:block;width:100%;padding:14px;border-radius:14px;border:none;background:${color};color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px">${hasNext ? "Próxima →" : "Ver Resultado →"}</button>`;
+
+  return `<div style="display:inline-block;background:rgba(244,132,95,0.18);color:var(--coral);padding:3px 10px;border-radius:18px;font-size:10px;font-weight:700;margin-bottom:6px">🔢 Ordene a Sequência</div>
+    <div style="font-size:15px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:14px">${q.q}</div>
+    ${items}${action}`;
+}
+
+function renderComplete(q, qAns, color, hasNext) {
+  const sel = qAns ? qAns.selected : null;
+  const fb = sel !== null;
+  const parts = q.q.split("___");
+  const wordDisplay = sel !== null
+    ? `<span style="display:inline-block;padding:2px 12px;border-radius:7px;margin:0 4px;background:${fb && sel === q.ans ? "#E8F7EF" : fb ? "#FDEAE5" : color + "33"};color:${fb && sel === q.ans ? "#166534" : fb ? "#7F1D1D" : color};font-weight:800;font-size:15px;border:1.5px dashed ${color};min-width:60px;text-align:center">${q.words[sel]}</span>`
+    : `<span style="display:inline-block;padding:2px 12px;border-radius:7px;margin:0 4px;background:${color}22;color:var(--gray);font-weight:800;font-size:15px;border:1.5px dashed var(--line);min-width:60px;text-align:center">?????</span>`;
+
+  const wordBtns = !fb ? q.words.map((w, i) =>
+    `<button onclick="answerComplete(${i})" style="padding:10px 14px;border-radius:11px;border:1.5px solid var(--line);background:var(--card);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;width:100%;margin-bottom:8px">${w}</button>`
+  ).join("") : "";
+
+  return `<div style="display:inline-block;background:rgba(244,132,95,0.18);color:var(--coral);padding:3px 10px;border-radius:18px;font-size:10px;font-weight:700;margin-bottom:6px">🔤 Complete a Frase</div>
+    <div style="font-size:15px;font-weight:600;color:#fff;line-height:1.9;margin-top:6px;margin-bottom:16px">${parts[0]}${wordDisplay}${parts[1] || ""}</div>
+    ${wordBtns}
+    ${fb ? feedbackBox(sel === q.ans, q.tip, hasNext, color) : ""}`;
+}
+
+function feedbackBox(correct, tip, hasNext, color) {
+  return `<div style="margin-top:12px;padding:11px 13px;border-radius:11px;font-size:12px;font-weight:600;line-height:1.5;background:${correct ? "#E8F7EF" : "#FDEAE5"};color:${correct ? "#166534" : "#7F1D1D"}">
+    ${correct ? "✅ Correto! +20 pontos" : "❌ Não foi dessa vez..."}
+    ${tip ? `<div style="font-size:11px;margin-top:5px;font-weight:400;line-height:1.6">💡 ${tip}</div>` : ""}
+  </div>
+  <button onclick="nextQ()" style="display:block;width:100%;padding:14px;border-radius:14px;border:none;background:${color};color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px">${hasNext ? "Próxima →" : "Ver Resultado →"}</button>`;
+}
+
+// ── AÇÕES DO QUIZ ─────────────────────────────────────────────────────────────
+function answerMultipla(i) {
+  const q = currentQ();
+  if (!q || STATE.answered[q.id]) return;
+  STATE.answered[q.id] = { selected: i };
+  if (i === q.ans) addPts(20);
+  render();
+}
+
+function answerVF(v) {
+  const q = currentQ();
+  if (!q || STATE.answered[q.id]) return;
+  const boolVal = (v === 1 || v === true || v === "true");
+  STATE.answered[q.id] = { selected: boolVal };
+  if (boolVal === q.ans) addPts(20);
+  render();
+}
+
+function answerComplete(i) {
+  const q = currentQ();
+  if (!q || STATE.answered[q.id]) return;
+  STATE.answered[q.id] = { selected: i };
+  if (i === q.ans) addPts(20);
+  render();
+}
+
+function checkOrder() {
+  const q = currentQ();
+  if (!q || STATE.answered[q.id]) return;
+  const order = STATE.orderItems[q.id] || [];
+  const ok = JSON.stringify(order) === JSON.stringify(q.correctOrder);
+  STATE.answered[q.id] = { checked: ok ? "ok" : "no" };
+  if (ok) addPts(25);
+  render();
+}
+
+function moveOrder(pos, dir) {
+  const q = currentQ();
+  if (!q || STATE.answered[q.id]) return;
+  const o = [...(STATE.orderItems[q.id] || [])];
+  const to = pos + dir;
+  if (to < 0 || to >= o.length) return;
+  [o[pos], o[to]] = [o[to], o[pos]];
+  STATE.orderItems[q.id] = o;
+  render();
+}
+
+function nextQ() {
+  const questions = PERGUNTAS[STATE.area] || [];
+  if (STATE.qIndex + 1 < questions.length) {
+    STATE.qIndex++;
+    render();
+  } else {
+    go("result");
+  }
+}
+
+function goBackQuiz() {
+  if (STATE.qIndex > 0) { STATE.qIndex--; render(); }
+  else go("home");
+}
+
+function toggleFav(id) {
+  if (STATE.favorites.has(id)) STATE.favorites.delete(id);
+  else STATE.favorites.add(id);
+  render();
+}
+
+// ── RESULTADO ─────────────────────────────────────────────────────────────────
+function renderResult() {
+  const sorted = getSorted();
+  const rank = sorted.findIndex(([name]) => name === STATE.currentPlayer);
+  const player = STATE.players.find(p => p.name === STATE.currentPlayer);
+  const a = AREAS.find(x => x.id === STATE.area);
+  const isWinner = rank === 0 && STATE.scores[STATE.currentPlayer] > 0;
+  const titles = ["🏆 Expert em Magic Kingdom","⭐ Conhecedor do Parque","🎯 Explorador Disney","🌸 Aprendiz Encantado","🌟 Viajante Disney","✨ Fã em Formação","🎢 Curioso do Parque","🌺 Começando a Jornada"];
+  const badges = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣"];
+
+  html(`
+    <div class="screen center" style="padding:40px 24px">
+      ${flowerSVG(52)}
+      <div style="font-size:52px;margin:8px 0">🎉</div>
+      <div style="font-family:Georgia,serif;font-size:22px;color:#fff;margin-top:4px">Quiz Completo!</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:4px">${player ? player.emoji : "👤"} ${STATE.currentPlayer} · ${a.label}</div>
+      <div style="font-size:46px;font-weight:800;color:var(--coral);margin-top:6px">${STATE.scores[STATE.currentPlayer]} pts</div>
+
+      <div style="margin-top:14px;padding:10px 20px;border-radius:14px;background:${isWinner ? "#FFF8E1" : "var(--card)"};border:1.5px solid ${isWinner ? "#FFD700" : "var(--line)"};text-align:center">
+        <div style="font-size:22px">${badges[rank] || "🎯"}</div>
+        <div style="font-size:13px;font-weight:700;color:${isWinner ? "#7B5400" : "#fff"};margin-top:4px">${titles[rank] || titles[3]}</div>
+      </div>
+
+      ${isWinner ? `
+        <div style="margin-top:14px;padding:12px 16px;border-radius:14px;background:rgba(255,215,0,0.1);border:1.5px solid #FFD700;text-align:left;width:100%;max-width:340px">
+          <div style="font-size:12px;font-weight:700;color:#7B5400;margin-bottom:6px">🔓 Missão Bônus Desbloqueada!</div>
+          <div style="font-size:13px;color:#7B5400;line-height:1.5">Fotografe a vista do alto do Astro Orbiter à noite com toda a Tomorrowland iluminada abaixo!</div>
+          <div style="font-size:13px;font-weight:800;color:#FFD700;margin-top:6px">+50 pontos exclusivos</div>
+        </div>
+      ` : ""}
+
+      <div style="display:flex;gap:10px;margin-top:20px;width:100%;max-width:340px">
+        <button onclick="go('ranking')" class="btn-primary" style="flex:1">🏆 Ranking</button>
+        <button onclick="go('home')" class="btn-outline" style="flex:1;margin-top:0">Início</button>
+      </div>
+      ${!STATE.surveyDone ? `<button onclick="go('survey')" style="margin-top:12px;background:none;border:none;color:#9B59B6;font-size:13px;cursor:pointer;font-family:inherit;text-decoration:underline">📝 Dar feedback sobre o Triploom</button>` : ""}
+    </div>
+  `);
+}
+
+// ── RANKING ───────────────────────────────────────────────────────────────────
+function renderRanking() {
+  const sorted = getSorted();
+  const titles = ["🏆 Expert em Magic Kingdom","⭐ Conhecedor do Parque","🎯 Explorador Disney","🌸 Aprendiz Encantado","🌟 Viajante Disney","✨ Fã em Formação","🎢 Curioso do Parque","🌺 Começando a Jornada"];
+  const badges = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣"];
+
+  html(`
+    <div class="screen" style="padding:24px 20px 40px">
+      <button class="btn-back" onclick="go('home')">← Voltar</button>
+      <div style="font-family:Georgia,serif;font-size:22px;color:#fff;text-align:center;margin-bottom:6px">🏆 Ranking do Grupo</div>
+      <div style="font-size:12px;color:var(--gray);text-align:center;margin-bottom:20px">Magic Kingdom · Pontuação acumulada</div>
+      ${sorted.map(([name, score], i) => {
+        const p = STATE.players.find(x => x.name === name);
+        const isFirst = i === 0;
+        return `<div style="border-radius:14px;padding:14px 16px;margin-bottom:10px;background:${isFirst ? "#FFF8E1" : "var(--card)"};border:1.5px solid ${isFirst ? "#FFD700" : "var(--line)"}">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:26px">${badges[i] || "🎯"}</span>
+            <span style="font-size:22px">${p ? p.emoji : "👤"}</span>
+            <div style="flex:1">
+              <div style="color:${isFirst ? "#7B5400" : "#fff"};font-weight:700;font-size:14px">${name}</div>
+              <div style="font-size:11px;color:${isFirst ? "#A07000" : "var(--gray)"};margin-top:2px">${titles[i] || titles[3]}</div>
+            </div>
+            <span style="color:${isFirst ? "#7B5400" : "var(--coral)"};font-weight:800;font-size:18px">${score} pts</span>
+          </div>
+        </div>`;
+      }).join("")}
+      <button onclick="resetScores()" class="btn-outline" style="margin-top:12px;font-size:12px">🔄 Reiniciar pontuação</button>
+    </div>
+  `);
+}
+
+// ── FAVORITAS ─────────────────────────────────────────────────────────────────
+function renderFavorites() {
+  const allQ = Object.values(PERGUNTAS).flat();
+  const favQ = allQ.filter(q => STATE.favorites.has(q.id));
+
+  html(`
+    <div class="screen" style="padding:24px 20px 40px">
+      <button class="btn-back" onclick="go('home')">← Voltar</button>
+      <div style="font-family:Georgia,serif;font-size:20px;color:#fff;margin-bottom:16px">⭐ Perguntas Favoritas</div>
+      ${favQ.length === 0 ? `<div style="color:var(--gray);font-size:13px;text-align:center;margin-top:48px;line-height:1.7">Nenhuma favorita ainda.<br>Toque na ⭐ durante o quiz!</div>` : ""}
+      ${favQ.map(fq => {
+        const ar = AREAS.find(a => (PERGUNTAS[a.id] || []).some(q => q.id === fq.id));
+        return `<div class="card" style="border-color:${ar ? ar.color + "40" : "var(--line)"};margin-bottom:10px">
+          <div style="font-size:10px;color:${ar ? ar.color : "var(--coral)"};font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px">${ar ? ar.emoji + " " + ar.label : ""}</div>
+          <div style="font-size:13px;color:#fff;line-height:1.5;font-weight:500">${fq.q}</div>
+          ${fq.tip ? `<div style="font-size:11px;color:var(--gray);margin-top:7px;line-height:1.5">💡 ${fq.tip}</div>` : ""}
+          ${fq.ind ? `<div style="font-size:11px;color:#FABC9A;margin-top:6px">${fq.ind}</div>` : ""}
+          <button onclick="removeFav(${fq.id})" style="margin-top:8px;background:none;border:none;color:var(--coral);font-size:11px;font-weight:700;cursor:pointer;padding:0">✕ Remover</button>
+        </div>`;
+      }).join("")}
+    </div>
+  `);
+}
+
+function removeFav(id) {
+  STATE.favorites.delete(id);
+  render();
+}
+
+// ── PESQUISA ──────────────────────────────────────────────────────────────────
+function renderSurvey() {
+  html(`
+    <div class="screen" style="padding:24px 20px">
+      <button class="btn-back" onclick="go('home')">← Voltar</button>
+      <div style="font-family:Georgia,serif;font-size:20px;color:#fff;margin-bottom:6px">📝 Sua Opinião</div>
+      <div style="font-size:13px;color:var(--gray);margin-bottom:24px;line-height:1.6">Ajude o Triploom a ser ainda melhor! Leva menos de 2 minutos.</div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="field-label" style="margin-bottom:10px">⭐ Qual é a sua nota para o Triploom?</div>
+        <div style="display:flex;gap:8px;justify-content:center">
+          ${[1,2,3,4,5].map(n => `<button id="star-${n}" onclick="selectStar(${n})" style="font-size:28px;background:none;border:none;cursor:pointer;filter:grayscale(1);transition:filter 0.2s">⭐</button>`).join("")}
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="field-label" style="margin-bottom:10px">😊 O que você mais gostou?</div>
+        <textarea id="liked" class="field" rows="3" placeholder="Ex: As curiosidades são incríveis! Aprendi muito sobre o parque..."></textarea>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="field-label" style="margin-bottom:10px">🤔 O que poderia melhorar?</div>
+        <textarea id="improve" class="field" rows="3" placeholder="Ex: Gostaria de mais fotos nas perguntas..."></textarea>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="field-label" style="margin-bottom:10px">📢 Você indicaria o Triploom para amigos ou família?</div>
+        <div style="display:flex;gap:10px">
+          <button id="rec-yes" onclick="selectRec('yes')" class="sex-btn">👍 Sim, com certeza!</button>
+          <button id="rec-no" onclick="selectRec('no')" class="sex-btn">🤔 Talvez</button>
+        </div>
+      </div>
+
+      <button onclick="submitSurvey()" class="btn-primary">Enviar Feedback 🌸</button>
+    </div>
+  `);
+  window._star = 0;
+  window._rec = null;
+}
+
+function selectStar(n) {
+  window._star = n;
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.getElementById("star-" + i);
+    if (btn) btn.style.filter = i <= n ? "grayscale(0)" : "grayscale(1)";
+  }
+}
+
+function selectRec(r) {
+  window._rec = r;
+  document.querySelectorAll(".sex-btn").forEach(b => b.classList.remove("selected"));
+  const btn = document.getElementById("rec-" + r);
+  if (btn) btn.classList.add("selected");
+}
+
+function submitSurvey() {
+  const liked = val("liked");
+  const improve = val("improve");
+  const data = {
+    organizer: STATE.organizer,
+    players: STATE.players.map(p => p.name),
+    star: window._star,
+    liked,
+    improve,
+    recommend: window._rec,
+    date: new Date().toISOString(),
+  };
+  console.log("SURVEY DATA:", JSON.stringify(data));
+  // Em produção: enviar para API/email
+  STATE.surveyDone = true;
+  go("survey_thanks");
+}
+
+function renderSurveyThanks() {
+  html(`
+    <div class="screen center">
+      <div style="font-size:64px">🌸</div>
+      <div style="font-family:Georgia,serif;font-size:24px;color:#fff;margin-top:16px">Obrigada!</div>
+      <div style="font-size:14px;color:var(--gray);margin-top:10px;line-height:1.7;max-width:280px;text-align:center">
+        Seu feedback é muito importante para o Triploom continuar crescendo e melhorando!
+      </div>
+      <button onclick="go('home')" class="btn-primary" style="margin-top:32px;width:200px">Voltar ao início</button>
+    </div>
+  `);
+}
+
+// ── UTILITÁRIOS ───────────────────────────────────────────────────────────────
+function go(screen) { STATE.screen = screen; render(); }
+function currentQ() { return (PERGUNTAS[STATE.area] || [])[STATE.qIndex]; }
+function addPts(n) { STATE.scores[STATE.currentPlayer] = (STATE.scores[STATE.currentPlayer] || 0) + n; }
+function getSorted() { return Object.entries(STATE.scores).sort((a, b) => b[1] - a[1]); }
+function val(id) { const el = document.getElementById(id); return el ? el.value : ""; }
+function html(content) { document.getElementById("app").innerHTML = content; }
+
+function shake(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.borderColor = "#E8674A";
+  el.style.animation = "shake 0.4s";
+  setTimeout(() => { el.style.animation = ""; el.style.borderColor = ""; }, 500);
+}
+
+function resetScores() {
+  STATE.players.forEach(p => { STATE.scores[p.name] = 0; });
+  STATE.answered = {};
+  go("home");
+}
+
+function saveToLocalStorage() {
+  try {
+    localStorage.setItem("triploom_organizer", JSON.stringify(STATE.organizer));
+    localStorage.setItem("triploom_players", JSON.stringify(STATE.players));
+    localStorage.setItem("triploom_scores", JSON.stringify(STATE.scores));
+  } catch(e) {}
+}
+
+function flowerSVG(size) {
+  const r = size / 2;
+  let petals = "";
+  for (let i = 0; i < 8; i++) {
+    petals += `<ellipse cx="${r}" cy="${r * 0.35}" rx="${r * 0.22}" ry="${r * 0.42}" fill="#F4845F" transform="rotate(${i * 45} ${r} ${r})"/>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;margin:0 auto">${petals}</svg>`;
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  try {
+    render();
+  } catch(e) {
+    document.getElementById("app").innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;padding:24px;text-align:center">' +
+      '<div style="font-size:32px">⚠️</div>' +
+      '<div style="color:#F4845F;font-size:16px;font-weight:700">Erro: ' + e.message + '</div>' +
+      '<div style="color:#8A8AA3;font-size:13px">Recarregue a página</div>' +
+      '</div>';
+  }
+});
   </script>
 </body>
 </html>
