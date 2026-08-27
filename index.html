@@ -569,9 +569,11 @@ function renderQuiz() {
   const qAns=STATE.answered[q.id]||null, isAnswered=!!qAns;
   const hasNext=STATE.qIndex+1<questions.length, isFav=STATE.favorites.has(q.id);
   const player=STATE.players.find(p=>p.name===STATE.currentPlayer);
-  if (q.type==="ordenar"&&!STATE.orderItems[q.id])
-    STATE.orderItems[q.id]=shuffle(q.items.map((_,i)=>i));
-  const order=STATE.orderItems[q.id]||q.items.map((_,i)=>i);
+  let order = [];
+  if (q.type==="ordenar") {
+    if (!STATE.orderItems[q.id]) STATE.orderItems[q.id]=shuffle(q.items.map((_,i)=>i));
+    order = STATE.orderItems[q.id];
+  }
   let qHtml="";
   if      (q.type==="multipla") qHtml=renderMultipla(q,qAns,color,hasNext);
   else if (q.type==="vf")       qHtml=renderVF(q,qAns,color,hasNext);
