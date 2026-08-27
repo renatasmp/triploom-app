@@ -535,14 +535,23 @@ function renderPlayerSelect() {
       <div style="color:var(--gray);font-size:12px;margin-top:4px">${count} perguntas</div>
     </div>
     <div class="section-label" style="margin-bottom:12px">Quem vai jogar agora?</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      ${STATE.players.map(p => {
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="players-grid">
+      ${STATE.players.map((p,idx) => {
         const sel = STATE.currentPlayer===p.name;
-        return '<button class="player-btn" onclick="selectPlayer('+JSON.stringify(p.name)+')" style="border:1.5px solid '+(sel?a.color:"var(--line)")+';background:'+(sel?a.color+"22":"var(--card)")+'"><div style="font-size:28px">'+p.emoji+'</div><div style="color:#fff;font-weight:700;font-size:13px;margin-top:6px">'+p.name+'</div><div style="color:'+a.color+';font-size:11px;font-weight:700;margin-top:2px">'+(STATE.scores[p.name]||0)+' pts</div></button>';
+        return '<button class="player-btn" data-pidx="'+idx+'" style="border:1.5px solid '+(sel?a.color:"var(--line)")+';background:'+(sel?a.color+"22":"var(--card)")+'"><div style="font-size:28px">'+p.emoji+'</div><div style="color:#fff;font-weight:700;font-size:13px;margin-top:6px">'+p.name+'</div><div style="color:'+a.color+';font-size:11px;font-weight:700;margin-top:2px">'+(STATE.scores[p.name]||0)+' pts</div></button>';
       }).join("")}
     </div>
-    ${STATE.currentPlayer?`<button class="btn-primary" style="margin-top:18px;background:${a.color}" onclick="startQuiz()">Começar →</button>`:""}
+    <div id="start-btn-wrap">
+      ${STATE.currentPlayer?`<button class="btn-primary" style="margin-top:18px;background:${a.color}" onclick="startQuiz()">Começar →</button>`:""}
+    </div>
   </div>`);
+  document.getElementById("players-grid").addEventListener("click", function(e) {
+    const btn = e.target.closest("[data-pidx]");
+    if (!btn) return;
+    const idx = parseInt(btn.getAttribute("data-pidx"));
+    STATE.currentPlayer = STATE.players[idx].name;
+    render();
+  });
 }
 
 function selectPlayer(name) { STATE.currentPlayer=name; render(); }
